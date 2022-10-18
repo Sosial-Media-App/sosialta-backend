@@ -33,7 +33,7 @@ func (rq *repoQuery) Login(newUser domain.Core) (domain.Core, string, error) {
 func (rq *repoQuery) Update(updateData domain.Core) (domain.Core, error) {
 	qryData := FromDomain(updateData)
 
-	err := rq.db.Model(&qryData).Where("id = ?", qryData.ID).Updates(updateData).Error
+	err := rq.db.Where("id = ?", qryData.ID).Updates(updateData).Error
 	if err != nil {
 		return domain.Core{}, err
 	}
