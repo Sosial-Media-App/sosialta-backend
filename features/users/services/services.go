@@ -6,6 +6,7 @@ import (
 
 	"github.com/Sosial-Media-App/sosialta/config"
 	"github.com/Sosial-Media-App/sosialta/features/users/domain"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type userService struct {
@@ -19,8 +20,20 @@ func New(repo domain.Repository) domain.Services {
 }
 
 func (us *userService) AddUser(newUser domain.Core) (domain.Core, error) {
+	if newUser.Password != "" {
+		generate, _ := bcrypt.GenerateFromPassword([]byte(newUser.Password), 10)
+		newUser.Password = string(generate)
+	}
+	res, err := us.qry.Insert(newUser)
 
-	return newUser, nil
+	if err != nil {
+		if newUser.Password == "" {
+			return domain.Core{}, errors.New(config.ENCRYPT_ERROR)
+		}
+		return domain.Core{}, errors.New(config.DUPLICATED_DATA)
+	}
+
+	return res, nil
 }
 
 func (us *userService) Login(newUser domain.Core) (domain.Core, error) {
