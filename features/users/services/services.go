@@ -72,14 +72,14 @@ func (us *userService) Login(newUser domain.Core) (domain.Core, error) {
 	return res, nil
 }
 
-func (us *userService) UpdateUser(updateData domain.Core, userId uint) (domain.Core, error) {
+func (us *userService) UpdateUser(updateData domain.Core, id uint) (domain.Core, error) {
 	if updateData.Password != "" {
 		hashed, _ := bcrypt.GenerateFromPassword([]byte(updateData.Password), bcrypt.DefaultCost)
 
 		updateData.Password = string(hashed)
 	}
 
-	res, err := us.qry.Update(updateData, userId)
+	res, err := us.qry.Update(updateData, id)
 	if err != nil {
 		if strings.Contains(err.Error(), config.DUPLICATED_DATA) {
 			return domain.Core{}, errors.New(config.REJECTED_DATA)
@@ -89,8 +89,11 @@ func (us *userService) UpdateUser(updateData domain.Core, userId uint) (domain.C
 	return res, nil
 }
 
-func (us *userService) DeleteUser(newUser domain.Core) error {
-
+func (us *userService) DeleteUser(id uint) error {
+	err := us.qry.Delete(id)
+	if err != nil {
+		return errors.New("data not found")
+	}
 	return nil
 }
 

@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"errors"
+
 	"github.com/Sosial-Media-App/sosialta/config"
 	"github.com/Sosial-Media-App/sosialta/features/users/domain"
 	"github.com/labstack/gommon/log"
@@ -52,11 +54,11 @@ func (rq *repoQuery) Login(newUser domain.Core) (domain.Core, error) {
 	return res, nil
 }
 
-func (rq *repoQuery) Update(updateData domain.Core, userId uint) (domain.Core, error) {
+func (rq *repoQuery) Update(updateData domain.Core, id uint) (domain.Core, error) {
 	var resQry User
 	resQry = FromDomain(updateData)
 
-	err := rq.db.Where("id = ?", userId).Updates(resQry).Error
+	err := rq.db.Where("id = ?", id).Updates(resQry).Error
 	if err != nil {
 		log.Error(config.DATABASE_ERROR)
 		return domain.Core{}, err
@@ -67,7 +69,15 @@ func (rq *repoQuery) Update(updateData domain.Core, userId uint) (domain.Core, e
 	return updateData, nil
 }
 
-func (rq *repoQuery) Delete(newUser domain.Core) (domain.Core, error) {
+func (rq *repoQuery) Delete(id uint) error {
+	err := rq.db.Where("id = ?", id).Delete(&User{})
+	if err.Error != nil {
+		return errors.New("cant delete data")
+	}
 
-	return newUser, nil
+	if err.RowsAffected < 1 {
+		return errors.New("row not affected")
+	}
+
+	return nil
 }
