@@ -31,7 +31,7 @@ func initConfig() *AppConfig {
 
 	err := godotenv.Load("config.env")
 	if err != nil {
-		log.Error("confiig error :", err.Error())
+		log.Error("config error :", err.Error())
 		return nil
 	}
 

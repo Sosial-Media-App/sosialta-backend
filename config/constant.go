@@ -6,4 +6,5 @@ const (
 	ENCRYPT_ERROR   = "error, cant encrypt the password"
 	REJECTED_DATA   = "error, rejected from database"
 	NO_DATA         = "no data in database"
+	PARSE_DATA      = "error, cant parsing data"
 )

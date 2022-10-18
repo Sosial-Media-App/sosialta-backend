@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Sosial-Media-App/sosialta/config"
+	"github.com/Sosial-Media-App/sosialta/features/users/repository"
 	"github.com/labstack/gommon/log"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -27,5 +28,5 @@ func InitDB(c *config.AppConfig) *gorm.DB {
 }
 
 func MigrateDB(db *gorm.DB) {
-
+	db.AutoMigrate(&repository.User{})
 }
