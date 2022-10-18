@@ -27,7 +27,7 @@ func (rq *repoQuery) Insert(newUser domain.Core) (domain.Core, error) {
 
 func (rq *repoQuery) Login(newUser domain.Core) (domain.Core, error) {
 	var resQry User
-	if err := rq.db.First(&resQry, "id = ?", newUser.ID).Error; err != nil {
+	if err := rq.db.First(&resQry, "username = ? OR email=?", newUser.Username, newUser.Email).Error; err != nil {
 		return domain.Core{}, err
 	}
 
