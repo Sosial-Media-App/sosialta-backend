@@ -8,6 +8,7 @@ import (
 	"github.com/Sosial-Media-App/sosialta/config"
 	"github.com/Sosial-Media-App/sosialta/features/users/domain"
 	"github.com/golang-jwt/jwt"
+	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -81,11 +82,21 @@ func (us *userService) GenerateToken(id uint, username string) string {
 	claim["exp"] = time.Now().Add(time.Hour * 1).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
 
-	str, err := token.SignedString([]byte("Same!!!12"))
+	str, err := token.SignedString([]byte("Sosialta!!!12"))
 	if err != nil {
 		log.Error(err.Error())
 		return ""
 	}
 
 	return str
+}
+
+func (bs *userService) ExtractToken(c echo.Context) uint {
+	token := c.Get("user").(*jwt.Token)
+	if token.Valid {
+		claim := token.Claims.(jwt.MapClaims)
+		return uint(claim["id"].(float64))
+	}
+
+	return 0
 }

@@ -26,6 +26,7 @@ type Services interface {
 	UpdateUser(updateData Core) (Core, error)
 	DeleteUser(newUser Core) error
 	GenerateToken(id uint, username string) string
+	ExtractToken(c echo.Context) uint
 }
 
 type Handler interface {

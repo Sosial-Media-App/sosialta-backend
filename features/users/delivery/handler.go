@@ -14,6 +14,7 @@ type userHandler struct {
 func New(e *echo.Echo, srv domain.Services) {
 	handler := userHandler{srv: srv}
 	e.POST("/users", handler.RegiterUser())
+	e.POST("/login", handler.LoginUser())
 	// e.PUT("/users", handler.UpdateDataUser())
 }
 
