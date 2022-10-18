@@ -15,7 +15,7 @@ func main() {
 	cfg := config.NewConfig()
 	db := database.InitDB(cfg)
 	uRepo := uRepo.New(db)
-
+	database.MigrateDB(db)
 	uServices := uServices.New(uRepo)
 	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.CORS())

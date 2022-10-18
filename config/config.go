@@ -19,7 +19,7 @@ type AppConfig struct {
 
 func NewConfig() *AppConfig {
 	cfg := initConfig()
-	if cfg != nil {
+	if cfg == nil {
 		log.Fatal("Cannot run configuration setup")
 		return nil
 	}

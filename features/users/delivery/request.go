@@ -35,7 +35,7 @@ func ToDomain(i interface{}) domain.Core {
 			UserPicture: cnv.UserPicture,
 		}
 	case RegiterFormat:
-		cnv := i.(UpdateFormat)
+		cnv := i.(RegiterFormat)
 		return domain.Core{
 			Fullname:    cnv.Fullname,
 			Username:    cnv.Username,

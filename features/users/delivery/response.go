@@ -43,12 +43,6 @@ func ToResponse(core interface{}, code string) interface{} {
 			ID: cnv.ID, Fullname: cnv.Fullname, Username: cnv.Username,
 			Email: cnv.Email, Password: cnv.Password,
 		}
-	case "login":
-		cnv := core.(domain.Core)
-		res = UpdateResponse{
-			ID: cnv.ID, Fullname: cnv.Fullname, Username: cnv.Username,
-			Email: cnv.Email, Password: cnv.Password,
-		}
 	}
 	return res
 }

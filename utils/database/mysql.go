@@ -21,7 +21,7 @@ func InitDB(c *config.AppConfig) *gorm.DB {
 
 	db, err := gorm.Open(mysql.Open(str), &gorm.Config{})
 	if err != nil {
-		log.Error("db config error:", err.Error())
+		log.Error("db config error :", err.Error())
 		return nil
 	}
 	return db
