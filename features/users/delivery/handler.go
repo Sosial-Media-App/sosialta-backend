@@ -15,9 +15,33 @@ type userHandler struct {
 
 func New(e *echo.Echo, srv domain.Services) {
 	handler := userHandler{srv: srv}
+	e.GET("/users", handler.GetUser())
+	e.GET("/users/:username", handler.GetUser())
 	e.POST("/users", handler.RegiterUser())
 	e.POST("/login", handler.LoginUser())
 	e.PUT("/users", handler.UpdateDataUser(), middleware.JWT([]byte("Sosialta!!!12")))
+}
+
+func (us *userHandler) GetUser() echo.HandlerFunc {
+	//mendapatkan detail profile
+	return func(c echo.Context) error {
+		var resQry RegiterFormat
+		var myUser bool = false
+		resQry.Username = c.QueryParam("username")
+		cnv := ToDomain(resQry)
+		res, err := us.srv.GetUser(cnv)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, FailedResponse(err.Error()))
+		}
+
+		// id := us.srv.ExtractToken(c)
+		// if id == res.ID {
+		// 	//memberi pembembeda sementara antara user dan user lain
+		// 	myUser = true
+		// }
+
+		return c.JSON(http.StatusCreated, SuccessResponse("berhasil register", ToResponseUser(res, myUser, "getuser")))
+	}
 }
 
 func (us *userHandler) LoginUser() echo.HandlerFunc {

@@ -18,9 +18,11 @@ type Repository interface {
 	Login(newUser Core) (Core, error)
 	Update(updateData Core, userId uint) (Core, error)
 	Delete(newUser Core) (Core, error)
+	Get(newUser Core) (Core, error)
 }
 
 type Services interface {
+	GetUser(newUser Core) (Core, error)
 	AddUser(newUser Core) (Core, error)
 	Login(newUser Core) (Core, error)
 	UpdateUser(updateData Core, userId uint) (Core, error)
@@ -33,4 +35,5 @@ type Handler interface {
 	RegiterUser() echo.HandlerFunc
 	LoginUser() echo.HandlerFunc
 	UpdateDataUser() echo.HandlerFunc
+	GetUser() echo.HandlerFunc
 }

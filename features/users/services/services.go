@@ -23,6 +23,20 @@ func New(repo domain.Repository) domain.Services {
 	}
 }
 
+func (us *userService) GetUser(newUser domain.Core) (domain.Core, error) {
+	res, err := us.qry.Get(newUser)
+	if err != nil {
+		log.Error(err.Error())
+		if strings.Contains(err.Error(), "table") {
+			return domain.Core{}, errors.New("database error")
+		} else if strings.Contains(err.Error(), "found") {
+			return domain.Core{}, errors.New("no data")
+		}
+	}
+
+	return res, nil
+}
+
 func (us *userService) AddUser(newUser domain.Core) (domain.Core, error) {
 	if newUser.Password != "" {
 		generate, _ := bcrypt.GenerateFromPassword([]byte(newUser.Password), 10)

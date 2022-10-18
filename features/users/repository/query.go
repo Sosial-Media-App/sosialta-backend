@@ -17,6 +17,16 @@ func New(dbConn *gorm.DB) domain.Repository {
 	}
 }
 
+func (rq *repoQuery) Get(newUser domain.Core) (domain.Core, error) {
+	var resQry User = FromDomain(newUser)
+	if err := rq.db.First(&resQry, "username = ?", resQry.Username).Error; err != nil {
+		return domain.Core{}, err
+	}
+	// selesai dari DB
+	res := ToDomain(resQry)
+	return res, nil
+}
+
 func (rq *repoQuery) Insert(newUser domain.Core) (domain.Core, error) {
 	var cnv User = FromDomain(newUser)
 	if err := rq.db.Create(&cnv).Error; err != nil {
