@@ -29,4 +29,5 @@ type Services interface {
 
 type Handler interface {
 	RegiterUser() echo.HandlerFunc
+	LoginUser() echo.HandlerFunc
 }
