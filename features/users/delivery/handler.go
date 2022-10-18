@@ -95,10 +95,7 @@ func (us *userHandler) UpdateDataUser() echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, err.Error())
 		}
 
-		return c.JSON(http.StatusOK, map[string]interface{}{
-			"message": "Success update data.",
-			"data":    res,
-		})
+		return c.JSON(http.StatusOK, ToResponse(res, "update"))
 	}
 }
 

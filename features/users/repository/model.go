@@ -56,10 +56,14 @@ func ToDomainArray(u User, c []Content) domain.Core {
 	var cContext []domain.ContentCore
 
 	for _, val := range c {
-		cContext = append(cContext, domain.ContentCore{ID: val.ID, StoryType: val.StoryType, StroyDetail: val.StroyDetail, StoryPicture: val.StoryPicture})
+		cContext = append(cContext, domain.ContentCore{
+			ID: val.ID, StoryType: val.StoryType, StroyDetail: val.StroyDetail,
+			StoryPicture: val.StoryPicture})
 	}
-	var res domain.Core = domain.Core{ID: u.ID, Username: u.Username, Email: u.Email,
-		Password: u.Password, Fullname: u.Fullname, Phone: u.Phone, Dob: u.Dob, UserPicture: u.UserPicture, DetailCore: domain.DetailCore{cContext}}
+	var res domain.Core = domain.Core{
+		ID: u.ID, Username: u.Username, Email: u.Email,
+		Password: u.Password, Fullname: u.Fullname, Phone: u.Phone,
+		Dob: u.Dob, UserPicture: u.UserPicture, DetailCore: domain.DetailCore{cContext}}
 
 	return res
 }
