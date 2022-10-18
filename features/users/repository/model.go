@@ -14,6 +14,15 @@ type User struct {
 	Phone       string
 	Dob         string
 	UserPicture string
+	Contents    []Content `gorm:"foreignKey:id"`
+}
+
+type Content struct {
+	gorm.Model
+	IdUser       uint
+	StoryType    string
+	StroyDetail  string
+	StoryPicture string
 }
 
 func FromDomain(du domain.Core) User {
@@ -42,11 +51,15 @@ func ToDomain(u User) domain.Core {
 	}
 }
 
-func ToDomainArray(u []User) []domain.Core {
-	var res []domain.Core
-	for _, val := range u {
-		res = append(res, domain.Core{ID: val.ID, Username: val.Username, Email: val.Email,
-			Password: val.Password, Fullname: val.Fullname, Phone: val.Phone, Dob: val.Dob, UserPicture: val.UserPicture})
+func ToDomainArray(u User, c []Content) domain.Core {
+	// var hasil domain.DetailCore
+	var cContext []domain.ContentCore
+
+	for _, val := range c {
+		cContext = append(cContext, domain.ContentCore{ID: val.ID, StoryType: val.StoryType, StroyDetail: val.StroyDetail, StoryPicture: val.StoryPicture})
 	}
+	var res domain.Core = domain.Core{ID: u.ID, Username: u.Username, Email: u.Email,
+		Password: u.Password, Fullname: u.Fullname, Phone: u.Phone, Dob: u.Dob, UserPicture: u.UserPicture, DetailCore: domain.DetailCore{cContext}}
+
 	return res
 }

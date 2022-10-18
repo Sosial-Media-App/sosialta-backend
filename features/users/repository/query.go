@@ -19,11 +19,15 @@ func New(dbConn *gorm.DB) domain.Repository {
 
 func (rq *repoQuery) Get(newUser domain.Core) (domain.Core, error) {
 	var resQry User = FromDomain(newUser)
+	var resQryContent []Content
 	if err := rq.db.First(&resQry, "username = ?", resQry.Username).Error; err != nil {
 		return domain.Core{}, err
 	}
 	// selesai dari DB
-	res := ToDomain(resQry)
+	if err := rq.db.Find(&resQryContent, "id_user = ?", resQry.ID).Error; err != nil {
+		return domain.Core{}, err
+	}
+	res := ToDomainArray(resQry, resQryContent)
 	return res, nil
 }
 

@@ -11,6 +11,19 @@ type Core struct {
 	Phone       string
 	Dob         string
 	UserPicture string
+	DetailCore
+}
+
+type ContentCore struct {
+	ID           uint
+	IdUser       uint
+	StoryType    string
+	StroyDetail  string
+	StoryPicture string
+}
+
+type DetailCore struct {
+	DetailCore []ContentCore
 }
 
 type Repository interface {

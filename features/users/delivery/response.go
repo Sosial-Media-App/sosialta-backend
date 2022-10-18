@@ -37,6 +37,7 @@ type GetUserResponse struct {
 	Dob         string `json:"dob"`
 	UserPicture string `json:"user_picture"`
 	MyUser      bool   `json:"my_user"`
+	domain.DetailCore
 }
 
 func ToResponse(core interface{}, code string) interface{} {
@@ -74,7 +75,7 @@ func ToResponseUser(core interface{}, myUser bool, code string) interface{} {
 	cnv := core.(domain.Core)
 	res = GetUserResponse{
 		ID: cnv.ID, Fullname: cnv.Fullname, Username: cnv.Username,
-		Email: cnv.Email, Password: cnv.Password, MyUser: myUser,
+		Email: cnv.Email, Password: cnv.Password, MyUser: myUser, DetailCore: cnv.DetailCore,
 	}
 	return res
 }
