@@ -29,8 +29,8 @@ type DetailCore struct {
 type Repository interface {
 	Insert(newUser Core) (Core, error)
 	Login(newUser Core) (Core, error)
-	Update(updateData Core, userId uint) (Core, error)
-	Delete(newUser Core) (Core, error)
+	Update(updateData Core, id uint) (Core, error)
+	Delete(id uint) error
 	Get(newUser Core) (Core, error)
 }
 
@@ -38,8 +38,8 @@ type Services interface {
 	GetUser(newUser Core) (Core, error)
 	AddUser(newUser Core) (Core, error)
 	Login(newUser Core) (Core, error)
-	UpdateUser(updateData Core, userId uint) (Core, error)
-	DeleteUser(newUser Core) error
+	UpdateUser(updateData Core, id uint) (Core, error)
+	DeleteUser(id uint) error
 	GenerateToken(id uint, username string) string
 	ExtractToken(c echo.Context) uint
 }
@@ -49,4 +49,5 @@ type Handler interface {
 	LoginUser() echo.HandlerFunc
 	UpdateDataUser() echo.HandlerFunc
 	GetUser() echo.HandlerFunc
+	DeactiveUser() echo.HandlerFunc
 }

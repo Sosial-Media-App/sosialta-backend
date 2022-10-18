@@ -2,6 +2,7 @@ package delivery
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/Sosial-Media-App/sosialta/config"
 	"github.com/Sosial-Media-App/sosialta/features/users/domain"
@@ -20,6 +21,7 @@ func New(e *echo.Echo, srv domain.Services) {
 	e.POST("/users", handler.RegiterUser())
 	e.POST("/login", handler.LoginUser())
 	e.PUT("/users", handler.UpdateDataUser(), middleware.JWT([]byte("Sosialta!!!12")))
+	e.DELETE("/users/:id", handler.DeactiveUser(), middleware.JWT([]byte("Sosialta!!!12")))
 }
 
 func (us *userHandler) GetUser() echo.HandlerFunc {
@@ -96,6 +98,24 @@ func (us *userHandler) UpdateDataUser() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, map[string]interface{}{
 			"message": "Success update data.",
 			"data":    res,
+		})
+	}
+}
+
+func (us *userHandler) DeactiveUser() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		cnv, errCnv := strconv.Atoi(c.Param("id"))
+		if errCnv != nil {
+			return c.JSON(http.StatusInternalServerError, "cant convert id")
+		}
+
+		err := us.srv.DeleteUser(uint(cnv))
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, err.Error())
+		}
+
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"message": "success delete data.",
 		})
 	}
 }
