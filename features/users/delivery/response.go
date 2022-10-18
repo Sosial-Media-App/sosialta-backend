@@ -24,7 +24,7 @@ type UpdateResponse struct {
 	Phone       string `json:"phone"`
 	Dob         string `json:"dob"`
 	UserPicture string `json:"user_picture"`
-	token       string `json:"token"`
+	Token       string `json:"token"`
 }
 
 func ToResponse(core interface{}, code string) interface{} {
@@ -58,7 +58,7 @@ func ToResponseLogin(core interface{}, userToken string, code string) interface{
 	cnv := core.(domain.Core)
 	res = UpdateResponse{
 		ID: cnv.ID, Fullname: cnv.Fullname, Username: cnv.Username,
-		Email: cnv.Email, Password: cnv.Password, token: userToken,
+		Email: cnv.Email, Password: cnv.Password, Token: userToken,
 	}
 	return res
 }

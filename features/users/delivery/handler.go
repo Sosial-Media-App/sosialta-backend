@@ -30,8 +30,9 @@ func (us *userHandler) LoginUser() echo.HandlerFunc {
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, FailedResponse(err.Error()))
 		}
-		// token := us.srv.GenerateToken(res.ID)
-		return c.JSON(http.StatusCreated, SuccessResponse("berhasil register", ToResponse(res, "login")))
+		token := us.srv.GenerateToken(res.ID, res.Username)
+
+		return c.JSON(http.StatusCreated, SuccessResponse("berhasil register", ToResponseLogin(res, token, "login")))
 	}
 }
 
