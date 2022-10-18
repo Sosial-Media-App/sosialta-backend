@@ -25,9 +25,15 @@ func (rq *repoQuery) Insert(newUser domain.Core) (domain.Core, error) {
 	return newUser, nil
 }
 
-func (rq *repoQuery) Login(newUser domain.Core) (domain.Core, string, error) {
+func (rq *repoQuery) Login(newUser domain.Core) (domain.Core, error) {
+	var resQry User
+	if err := rq.db.First(&resQry, "id = ?", newUser.ID).Error; err != nil {
+		return domain.Core{}, err
+	}
 
-	return newUser, "token", nil
+	// selesai dari DB
+	res := ToDomain(resQry)
+	return res, nil
 }
 
 func (rq *repoQuery) Update(updateData domain.Core) (domain.Core, error) {

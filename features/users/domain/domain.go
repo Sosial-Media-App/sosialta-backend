@@ -15,7 +15,7 @@ type Core struct {
 
 type Repository interface {
 	Insert(newUser Core) (Core, error)
-	Login(newUser Core) (Core, string, error)
+	Login(newUser Core) (Core, error)
 	Update(updateData Core) (Core, error)
 	Delete(newUser Core) (Core, error)
 }
@@ -25,6 +25,7 @@ type Services interface {
 	Login(newUser Core) (Core, error)
 	UpdateUser(updateData Core) (Core, error)
 	DeleteUser(newUser Core) error
+	GenerateToken(id uint, username string) string
 }
 
 type Handler interface {

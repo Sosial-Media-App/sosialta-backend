@@ -1,7 +1,6 @@
 package delivery
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/Sosial-Media-App/sosialta/features/users/domain"
@@ -18,15 +17,37 @@ func New(e *echo.Echo, srv domain.Services) {
 	// e.PUT("/users", handler.UpdateDataUser())
 }
 
-func (us *userHandler) RegiterUser() echo.HandlerFunc {
+func (us *userHandler) LoginUser() echo.HandlerFunc {
+	//autentikasi user login
 	return func(c echo.Context) error {
-		return c.JSON(http.StatusBadRequest, errors.New("fail"))
+		var resQry RegiterFormat
+		if err := c.Bind(&resQry); err != nil {
+			return c.JSON(http.StatusBadRequest, FailedResponse("cannot bind input"))
+		}
+
+		cnv := ToDomain(resQry)
+		res, err := us.srv.Login(cnv)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, FailedResponse(err.Error()))
+		}
+		// token := us.srv.GenerateToken(res.ID)
+		return c.JSON(http.StatusCreated, SuccessResponse("berhasil register", ToResponse(res, "login")))
 	}
 }
 
-func (us *userHandler) LoginUser() echo.HandlerFunc {
+func (us *userHandler) RegiterUser() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return c.JSON(http.StatusBadRequest, errors.New("fail"))
+		var input RegiterFormat
+		if err := c.Bind(&input); err != nil {
+			return c.JSON(http.StatusBadRequest, FailedResponse("cannot bind input"))
+		}
+		cnv := ToDomain(input)
+		res, err := us.srv.AddUser(cnv)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, FailedResponse(err.Error()))
+		}
+
+		return c.JSON(http.StatusCreated, SuccessResponse("berhasil register", ToResponse(res, "register")))
 	}
 }
 
