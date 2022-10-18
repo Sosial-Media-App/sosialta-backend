@@ -16,14 +16,14 @@ type Core struct {
 type Repository interface {
 	Insert(newUser Core) (Core, error)
 	Login(newUser Core) (Core, error)
-	Update(updateData Core) (Core, error)
+	Update(updateData Core, userId uint) (Core, error)
 	Delete(newUser Core) (Core, error)
 }
 
 type Services interface {
 	AddUser(newUser Core) (Core, error)
 	Login(newUser Core) (Core, error)
-	UpdateUser(updateData Core) (Core, error)
+	UpdateUser(updateData Core, userId uint) (Core, error)
 	DeleteUser(newUser Core) error
 	GenerateToken(id uint, username string) string
 	ExtractToken(c echo.Context) uint

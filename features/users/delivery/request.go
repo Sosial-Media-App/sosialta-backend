@@ -12,6 +12,7 @@ type RegiterFormat struct {
 	UserPicture string `json:"user_picture" form:"user_picture"`
 }
 type UpdateFormat struct {
+	ID          uint   `json:"id" form:"id"`
 	Fullname    string `json:"fullname" form:"fullname"`
 	Username    string `json:"username" form:"username"`
 	Email       string `json:"email" form:"email"`
@@ -26,6 +27,7 @@ func ToDomain(i interface{}) domain.Core {
 	case UpdateFormat:
 		cnv := i.(UpdateFormat)
 		return domain.Core{
+			ID:          cnv.ID,
 			Fullname:    cnv.Fullname,
 			Username:    cnv.Username,
 			Email:       cnv.Email,

@@ -3,8 +3,10 @@ package delivery
 import (
 	"net/http"
 
+	"github.com/Sosial-Media-App/sosialta/config"
 	"github.com/Sosial-Media-App/sosialta/features/users/domain"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 type userHandler struct {
@@ -15,7 +17,7 @@ func New(e *echo.Echo, srv domain.Services) {
 	handler := userHandler{srv: srv}
 	e.POST("/users", handler.RegiterUser())
 	e.POST("/login", handler.LoginUser())
-	// e.PUT("/users", handler.UpdateDataUser())
+	e.PUT("/users", handler.UpdateDataUser(), middleware.JWT([]byte("Sosialta!!!12")))
 }
 
 func (us *userHandler) LoginUser() echo.HandlerFunc {
@@ -53,21 +55,23 @@ func (us *userHandler) RegiterUser() echo.HandlerFunc {
 	}
 }
 
-// func (us *userHandler) UpdateDataUser() echo.HandlerFunc {
-// 	return func(c echo.Context) error {
-// 		var updateData UpdateUserFormat
-// 		if err := c.Bind(&updateData); err != nil {
-// 			return c.JSON(http.StatusBadRequest, config.PARSE_DATA)
-// 		}
+func (us *userHandler) UpdateDataUser() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		var updateData UpdateFormat
+		if err := c.Bind(&updateData); err != nil {
+			return c.JSON(http.StatusBadRequest, config.PARSE_DATA)
+		}
+		cnv := ToDomain(updateData)
 
-// 		res, err := us.srv.UpdateUser(updateData)
-// 		if err != nil {
-// 			return c.JSON(http.StatusInternalServerError, err.Error())
-// 		}
+		userId := us.srv.ExtractToken(c)
+		res, err := us.srv.UpdateUser(cnv, userId)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, err.Error())
+		}
 
-// 		return c.JSON(http.StatusOK, map[string]interface{}{
-// 			"message": "Success update data.",
-// 			"data":    res,
-// 		})
-// 	}
-// }
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"message": "Success update data.",
+			"data":    res,
+		})
+	}
+}

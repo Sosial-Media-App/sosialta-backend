@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"github.com/Sosial-Media-App/sosialta/config"
 	"github.com/Sosial-Media-App/sosialta/features/users/domain"
+	"github.com/labstack/gommon/log"
 	"gorm.io/gorm"
 )
 
@@ -36,15 +38,17 @@ func (rq *repoQuery) Login(newUser domain.Core) (domain.Core, error) {
 	return res, nil
 }
 
-func (rq *repoQuery) Update(updateData domain.Core) (domain.Core, error) {
-	qryData := FromDomain(updateData)
+func (rq *repoQuery) Update(updateData domain.Core, userId uint) (domain.Core, error) {
+	var resQry User
+	resQry = FromDomain(updateData)
 
-	err := rq.db.Where("id = ?", qryData.ID).Updates(updateData).Error
+	err := rq.db.Where("id = ?", userId).Updates(resQry).Error
 	if err != nil {
+		log.Error(config.DATABASE_ERROR)
 		return domain.Core{}, err
 	}
 
-	updateData = ToDomain(qryData)
+	updateData = ToDomain(resQry)
 
 	return updateData, nil
 }
