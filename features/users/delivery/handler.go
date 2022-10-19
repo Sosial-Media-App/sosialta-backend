@@ -3,7 +3,6 @@ package delivery
 import (
 	"context"
 	"net/http"
-	"strconv"
 	"strings"
 
 	"github.com/Sosial-Media-App/sosialta/config"
@@ -23,10 +22,10 @@ type userHandler struct {
 func New(e *echo.Echo, srv domain.Services) {
 	handler := userHandler{srv: srv}
 	e.GET("/users/:username", handler.GetUser())
-	e.POST("/users", handler.RegiterUser(), middleware.JWT([]byte("Sosialta!!!12")))
+	e.POST("/users", handler.RegiterUser())
 	e.POST("/login", handler.LoginUser())
 	e.PUT("/users", handler.UpdateDataUser(), middleware.JWT([]byte("Sosialta!!!12")))
-	e.DELETE("/users/:id", handler.DeactiveUser(), middleware.JWT([]byte("Sosialta!!!12")))
+	e.DELETE("/users", handler.DeactiveUser(), middleware.JWT([]byte("Sosialta!!!12")))
 }
 
 func (us *userHandler) GetUser() echo.HandlerFunc {
@@ -140,11 +139,7 @@ func (us *userHandler) UpdateDataUser() echo.HandlerFunc {
 
 func (us *userHandler) DeactiveUser() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		cnv, errCnv := strconv.Atoi(c.Param("id"))
-		if errCnv != nil {
-			return c.JSON(http.StatusInternalServerError, "cant convert id")
-		}
-
+		cnv := us.srv.ExtractToken(c)
 		err := us.srv.DeleteUser(uint(cnv))
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, err.Error())

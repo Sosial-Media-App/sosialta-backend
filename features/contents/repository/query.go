@@ -73,9 +73,7 @@ func (rq *repoQuery) GetDetail(id uint) (domain.Core, error) {
 	}
 	// selesai dari DB
 
-	if err := rq.db.Limit(20).Order("created_at desc").Find(&resQryComment, "id_content = ?", resQry.ID).Error; err != nil {
-		return domain.Core{}, err
-	}
+	rq.db.Limit(20).Order("created_at desc").Find(&resQryComment, "id_content = ?", resQry.ID)
 
 	res := ToDomainDetail(resQry, resQryComment)
 	return res, nil

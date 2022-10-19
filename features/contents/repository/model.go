@@ -23,7 +23,7 @@ type Comment struct {
 func FromDomain(dc domain.Core) Content {
 	return Content{
 		Model:        gorm.Model{ID: dc.ID},
-		IdUser:       dc.ID,
+		IdUser:       dc.IdUser,
 		StoryType:    dc.StoryType,
 		StoryDetail:  dc.StoryDetail,
 		StoryPicture: dc.StoryPicture,
@@ -33,7 +33,7 @@ func FromDomain(dc domain.Core) Content {
 func ToDomain(c Content) domain.Core {
 	return domain.Core{
 		ID:           c.ID,
-		IdUser:       c.ID,
+		IdUser:       c.IdUser,
 		StoryType:    c.StoryType,
 		StoryDetail:  c.StoryDetail,
 		StoryPicture: c.StoryPicture,

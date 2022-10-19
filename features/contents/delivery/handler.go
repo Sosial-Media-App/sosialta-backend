@@ -25,7 +25,7 @@ func New(e *echo.Echo, srv domain.Services) {
 	e.GET("/contents", handler.GetContent())
 	e.POST("/contents", handler.RegiterContent(), middleware.JWT([]byte("Sosialta!!!12")))
 	e.GET("/contents/:id", handler.GetContentDetail())
-	e.PUT("/contents", handler.UpdateDataContent(), middleware.JWT([]byte("Sosialta!!!12")))
+	e.PUT("/contents/:id", handler.UpdateDataContent(), middleware.JWT([]byte("Sosialta!!!12")))
 	e.DELETE("/contents/:id", handler.DeactiveContent(), middleware.JWT([]byte("Sosialta!!!12")))
 }
 
@@ -147,7 +147,7 @@ func (cs *contentHandler) GetContentDetail() echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, errors.New("test"))
 		}
 
-		return c.JSON(http.StatusCreated, SuccessResponse("Success get data", ToResponseContent(res, "all")))
+		return c.JSON(http.StatusCreated, SuccessResponse("Success get data", ToResponse(res, "getdetail")))
 	}
 }
 

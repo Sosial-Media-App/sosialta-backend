@@ -101,7 +101,6 @@ func (us *userService) GenerateToken(id uint, username string) string {
 	claim := make(jwt.MapClaims)
 	claim["authorized"] = true
 	claim["id"] = id
-	claim["username"] = username
 	claim["exp"] = time.Now().Add(time.Hour * 1).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
 
