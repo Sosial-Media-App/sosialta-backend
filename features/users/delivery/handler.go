@@ -1,11 +1,16 @@
 package delivery
 
 import (
+	"context"
 	"net/http"
 	"strconv"
 
 	"github.com/Sosial-Media-App/sosialta/config"
 	"github.com/Sosial-Media-App/sosialta/features/users/domain"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -68,9 +73,42 @@ func (us *userHandler) LoginUser() echo.HandlerFunc {
 func (us *userHandler) RegiterUser() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var input RegiterFormat
-		if err := c.Bind(&input); err != nil {
-			return c.JSON(http.StatusBadRequest, FailedResponse("cannot bind input"))
+		input.Fullname = c.FormValue("fullname")
+		input.Username = c.FormValue("username")
+		input.Email = c.FormValue("email")
+		input.Password = c.FormValue("password")
+		input.Phone = c.FormValue("phone")
+		input.Dob = c.FormValue("Dob")
+
+		file, err := c.FormFile("file")
+		if err != nil {
+			return err
 		}
+
+		src, err := file.Open()
+		if err != nil {
+			return err
+		}
+		defer src.Close()
+
+		s3Config := &aws.Config{
+			Region:      aws.String("ap-southeast-1"),
+			Credentials: credentials.NewStaticCredentials("AKIAUFHWMWYWKGW2OIUP", "WInFzSVwxTiaOmoOoLyQ7jtk0nAkuH9WNQc9zJDM", ""),
+		}
+
+		s3Session := session.New(s3Config)
+
+		uploader := s3manager.NewUploader(s3Session)
+		inputData := &s3manager.UploadInput{
+			Bucket: aws.String("sosialtabucket"),           // bucket's name
+			Key:    aws.String("myfiles/" + file.Filename), // files destination location
+			Body:   src,                                    // content of the file
+			// ACL:    aws.String("Objects - List"),
+			// ContentType: aws.String("image/png"), // content type
+		}
+		_, _ = uploader.UploadWithContext(context.Background(), inputData)
+		input.UserPicture = file.Filename
+
 		cnv := ToDomain(input)
 		res, err := us.srv.AddUser(cnv)
 		if err != nil {
