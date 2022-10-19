@@ -18,7 +18,7 @@ type ContentCore struct {
 	ID           uint
 	IdUser       uint
 	StoryType    string
-	StroyDetail  string
+	StoryDetail  string
 	StoryPicture string
 }
 
