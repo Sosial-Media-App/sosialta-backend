@@ -4,7 +4,6 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/joho/godotenv"
 	"github.com/labstack/gommon/log"
 )
 
@@ -29,7 +28,7 @@ func NewConfig() *AppConfig {
 func initConfig() *AppConfig {
 	var app AppConfig
 
-	godotenv.Load("config.env")
+	// godotenv.Load("config.env")
 
 	app.DBUser = os.Getenv("DB_USER")
 	app.DBPwd = os.Getenv("DB_PWD")
