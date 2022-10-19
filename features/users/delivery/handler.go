@@ -75,6 +75,9 @@ func (us *userHandler) RegiterUser() echo.HandlerFunc {
 		if err := c.Bind(&input); err != nil {
 			return c.JSON(http.StatusBadRequest, config.PARSE_DATA)
 		}
+		if input.Email == "" || input.Username == "" {
+			return c.JSON(http.StatusBadRequest, config.USERNAME_EMAIL_EMPTY)
+		}
 
 		input.UserPicture = "https://sosialtabucket.s3.ap-southeast-1.amazonaws.com/myfiles/Screenshot+(316).png"
 		cnv := ToDomain(input)
