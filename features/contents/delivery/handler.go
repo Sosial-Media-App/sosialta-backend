@@ -13,6 +13,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 type contentHandler struct {
@@ -22,10 +23,10 @@ type contentHandler struct {
 func New(e *echo.Echo, srv domain.Services) {
 	handler := contentHandler{srv: srv}
 	e.GET("/contents", handler.GetContent())
-	e.POST("/contents", handler.RegiterContent())
-	// e.POST("/login", handler.LoginContent())
-	// e.PUT("/Contents", handler.UpdateDataContent(), middleware.JWT([]byte("Sosialta!!!12")))
-	// e.DELETE("/Contents/:id", handler.DeactiveContent(), middleware.JWT([]byte("Sosialta!!!12")))
+	e.POST("/contents", handler.RegiterContent(), middleware.JWT([]byte("Sosialta!!!12")))
+	e.GET("/contents/:id", handler.GetContentDetail())
+	e.PUT("/contents", handler.UpdateDataContent(), middleware.JWT([]byte("Sosialta!!!12")))
+	e.DELETE("/contents/:id", handler.DeactiveContent(), middleware.JWT([]byte("Sosialta!!!12")))
 }
 
 func (cs *contentHandler) RegiterContent() echo.HandlerFunc {

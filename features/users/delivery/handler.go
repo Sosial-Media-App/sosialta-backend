@@ -23,7 +23,7 @@ type userHandler struct {
 func New(e *echo.Echo, srv domain.Services) {
 	handler := userHandler{srv: srv}
 	e.GET("/users/:username", handler.GetUser())
-	e.POST("/users", handler.RegiterUser())
+	e.POST("/users", handler.RegiterUser(), middleware.JWT([]byte("Sosialta!!!12")))
 	e.POST("/login", handler.LoginUser())
 	e.PUT("/users", handler.UpdateDataUser(), middleware.JWT([]byte("Sosialta!!!12")))
 	e.DELETE("/users/:id", handler.DeactiveUser(), middleware.JWT([]byte("Sosialta!!!12")))
