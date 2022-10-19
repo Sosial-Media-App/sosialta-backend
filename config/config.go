@@ -29,11 +29,7 @@ func NewConfig() *AppConfig {
 func initConfig() *AppConfig {
 	var app AppConfig
 
-	err := godotenv.Load("config.env")
-	if err != nil {
-		log.Error("config error :", err.Error())
-		return nil
-	}
+	godotenv.Load("config.env")
 
 	app.DBUser = os.Getenv("DB_USER")
 	app.DBPwd = os.Getenv("DB_PWD")
