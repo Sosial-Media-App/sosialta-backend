@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"github.com/Sosial-Media-App/sosialta/config"
+	// cRepo "github.com/Sosial-Media-App/sosialta/features/contents/repository"
+	uRepo "github.com/Sosial-Media-App/sosialta/features/users/repository"
 	"github.com/labstack/gommon/log"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -20,12 +22,13 @@ func InitDB(c *config.AppConfig) *gorm.DB {
 
 	db, err := gorm.Open(mysql.Open(str), &gorm.Config{})
 	if err != nil {
-		log.Error("db config error:", err.Error())
+		log.Error("db config error :", err.Error())
 		return nil
 	}
 	return db
 }
 
 func MigrateDB(db *gorm.DB) {
-
+	db.AutoMigrate(&uRepo.User{})
+	db.AutoMigrate(&uRepo.Content{})
 }

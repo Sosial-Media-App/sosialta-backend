@@ -19,7 +19,7 @@ type AppConfig struct {
 
 func NewConfig() *AppConfig {
 	cfg := initConfig()
-	if cfg != nil {
+	if cfg == nil {
 		log.Fatal("Cannot run configuration setup")
 		return nil
 	}
@@ -31,7 +31,7 @@ func initConfig() *AppConfig {
 
 	err := godotenv.Load("config.env")
 	if err != nil {
-		log.Error("confiig error :", err.Error())
+		log.Error("config error :", err.Error())
 		return nil
 	}
 
