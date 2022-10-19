@@ -38,4 +38,4 @@ jobs:
             docker stop prjku
             docker rm prjku
             docker rmi khalidrian/sosialta
-            docker run --name prjku --link deployment:3306 -d -p 3000:3000 khalidrian/sosialta
+            docker run --name prjku --link altaserver:3306 -d -p 3000:3000 khalidrian/sosialta
