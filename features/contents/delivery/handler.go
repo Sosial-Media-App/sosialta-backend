@@ -20,8 +20,8 @@ type contentHandler struct {
 
 func New(e *echo.Echo, srv domain.Services) {
 	handler := contentHandler{srv: srv}
-	e.GET("/Contents/:Contentname", handler.GetContent())
-	e.POST("/Contents", handler.RegiterContent())
+	e.GET("/contents", handler.GetContent())
+	e.POST("/contents", handler.RegiterContent())
 	// e.POST("/login", handler.LoginContent())
 	// e.PUT("/Contents", handler.UpdateDataContent(), middleware.JWT([]byte("Sosialta!!!12")))
 	// e.DELETE("/Contents/:id", handler.DeactiveContent(), middleware.JWT([]byte("Sosialta!!!12")))
@@ -32,7 +32,7 @@ func (cs *contentHandler) RegiterContent() echo.HandlerFunc {
 		var input RegiterFormat
 		input.StoryType = c.FormValue("story_type")
 		input.StoryDetail = c.FormValue("story_detail")
-
+		input.IdUser = 1
 		file, err := c.FormFile("file")
 		if err != nil {
 			return err
@@ -81,7 +81,11 @@ func (cs *contentHandler) UpdateDataContent() echo.HandlerFunc {
 
 func (cs *contentHandler) GetContent() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return c.JSON(http.StatusInternalServerError, errors.New("test"))
+		res, err := cs.srv.GetContent()
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, errors.New("test"))
+		}
+		return c.JSON(http.StatusCreated, SuccessResponse("Success get Vendor", ToResponseContent(res, "all")))
 	}
 }
 

@@ -23,7 +23,7 @@ type UpdateResponse struct {
 	StoryPicture string `json:"story_picture"`
 }
 
-type GetUserResponse struct {
+type GetContentResponse struct {
 	ID           uint   `json:"id"`
 	IdUser       uint   `json:"id_user"`
 	StoryType    string `json:"story_type"`
@@ -52,12 +52,14 @@ func ToResponse(core interface{}, code string) interface{} {
 	return res
 }
 
-func ToResponseContent(core interface{}, myUser bool, code string) interface{} {
+func ToResponseContent(core interface{}, code string) interface{} {
 	var res interface{}
-	cnv := core.(domain.Core)
-	res = GetUserResponse{
-		ID: cnv.ID, IdUser: cnv.IdUser, StoryType: cnv.StoryType,
-		StoryDetail: cnv.StoryDetail, StoryPicture: cnv.StoryPicture, DetailCore: cnv.DetailCore,
+	var arr []GetContentResponse
+	val := core.([]domain.Core)
+	for _, cnv := range val {
+		arr = append(arr, GetContentResponse{ID: cnv.ID, IdUser: cnv.IdUser, StoryType: cnv.StoryType,
+			StoryDetail: cnv.StoryDetail, StoryPicture: cnv.StoryPicture, DetailCore: cnv.DetailCore})
 	}
+
 	return res
 }

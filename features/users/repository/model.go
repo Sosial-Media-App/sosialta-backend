@@ -14,8 +14,6 @@ type User struct {
 	Phone       string
 	Dob         string
 	UserPicture string
-	Contents    []Content `gorm:"foreignKey:id"`
-	Comments    []Comment `gorm:"foreignKey:id"`
 }
 
 type Content struct {
@@ -24,7 +22,6 @@ type Content struct {
 	StoryType    string
 	StoryDetail  string
 	StoryPicture string
-	Comments     []Comment `gorm:"foreignKey:id"`
 }
 
 type Comment struct {
