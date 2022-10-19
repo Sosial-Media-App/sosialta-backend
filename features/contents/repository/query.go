@@ -65,7 +65,18 @@ func (rq *repoQuery) Get() ([]domain.Core, error) {
 	return res, nil
 }
 
-func (rq *repoQuery) GetDetail(newContent domain.Core) (domain.Core, error) {
+func (rq *repoQuery) GetDetail(id uint) (domain.Core, error) {
+	var resQry Content
+	var resQryComment []Comment
+	if err := rq.db.Where("id=?", id).First(&resQry).Error; err != nil {
+		return domain.Core{}, err
+	}
+	// selesai dari DB
 
-	return domain.Core{}, nil
+	if err := rq.db.Limit(20).Order("created_at desc").Find(&resQryComment, "id_content = ?", resQry.ID).Error; err != nil {
+		return domain.Core{}, err
+	}
+
+	res := ToDomainDetail(resQry, resQryComment)
+	return res, nil
 }

@@ -134,6 +134,22 @@ func (cs *contentHandler) GetContent() echo.HandlerFunc {
 	}
 }
 
+func (cs *contentHandler) GetContentDetail() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		cnv, errCnv := strconv.Atoi(c.Param("id"))
+		if errCnv != nil {
+			return c.JSON(http.StatusInternalServerError, "cant convert id")
+		}
+
+		res, err := cs.srv.GetContentDetail(uint(cnv))
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, errors.New("test"))
+		}
+
+		return c.JSON(http.StatusCreated, SuccessResponse("Success get data", ToResponseContent(res, "all")))
+	}
+}
+
 func (cs *contentHandler) DeactiveContent() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		cnv, errCnv := strconv.Atoi(c.Param("id"))

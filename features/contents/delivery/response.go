@@ -48,6 +48,10 @@ func ToResponse(core interface{}, code string) interface{} {
 			ID: cnv.ID, IdUser: cnv.IdUser, StoryType: cnv.StoryType,
 			StoryDetail: cnv.StoryDetail, StoryPicture: cnv.StoryPicture,
 		}
+	case "getdetail":
+		cnv := core.(domain.Core)
+		res = GetContentResponse{ID: cnv.ID, IdUser: cnv.IdUser, StoryType: cnv.StoryType,
+			StoryDetail: cnv.StoryDetail, StoryPicture: cnv.StoryPicture, DetailCore: cnv.DetailCore}
 	}
 	return res
 }

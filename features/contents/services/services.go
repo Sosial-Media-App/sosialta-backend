@@ -35,9 +35,17 @@ func (srv *contentServices) GetContent() ([]domain.Core, error) {
 	return res, nil
 }
 
-func (srv *contentServices) GetContentDetail(newContent domain.Core) (domain.Core, error) {
-
-	return domain.Core{}, nil
+func (srv *contentServices) GetContentDetail(id uint) (domain.Core, error) {
+	res, err := srv.qry.GetDetail(id)
+	if err != nil {
+		log.Error(err.Error())
+		if strings.Contains(err.Error(), "table") {
+			return domain.Core{}, errors.New("database error")
+		} else if strings.Contains(err.Error(), "found") {
+			return domain.Core{}, errors.New("no data")
+		}
+	}
+	return res, nil
 }
 
 func (srv *contentServices) AddContent(newContent domain.Core) (domain.Core, error) {

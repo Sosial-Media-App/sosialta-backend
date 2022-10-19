@@ -59,3 +59,20 @@ func ToDomainArray(u []Content, c []Comment) []domain.Core {
 
 	return res
 }
+
+func ToDomainDetail(u Content, c []Comment) domain.Core {
+	// var hasil domain.DetailCore
+	var cComment []domain.CommentCore
+
+	for _, val := range c {
+		cComment = append(cComment, domain.CommentCore{
+			ID: val.ID, IdUser: val.ID, IdContent: val.IdContent, Comment: val.Comment})
+	}
+	var res domain.Core = domain.Core{
+		IdUser:       u.ID,
+		StoryType:    u.StoryType,
+		StoryDetail:  u.StoryDetail,
+		StoryPicture: u.StoryPicture, DetailCore: domain.DetailCore{cComment}}
+
+	return res
+}
