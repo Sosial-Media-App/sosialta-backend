@@ -75,7 +75,7 @@ func ToResponseUser(core interface{}, myUser bool, code string) interface{} {
 	cnv := core.(domain.Core)
 	res = GetUserResponse{
 		ID: cnv.ID, Fullname: cnv.Fullname, Username: cnv.Username,
-		Email: cnv.Email, Password: cnv.Password, MyUser: myUser, DetailCore: cnv.DetailCore,
+		Email: cnv.Email, Password: cnv.Password, Phone: cnv.Phone, Dob: cnv.Dob, UserPicture: cnv.UserPicture, MyUser: myUser, DetailCore: cnv.DetailCore,
 	}
 	return res
 }
