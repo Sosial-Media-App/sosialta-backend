@@ -73,6 +73,23 @@ func (us *userHandler) LoginUser() echo.HandlerFunc {
 func (us *userHandler) RegiterUser() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var input RegiterFormat
+		if err := c.Bind(&input); err != nil {
+			return c.JSON(http.StatusBadRequest, config.PARSE_DATA)
+		}
+
+		cnv := ToDomain(input)
+		res, err := us.srv.AddUser(cnv)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, FailedResponse(err.Error()))
+		}
+
+		return c.JSON(http.StatusCreated, SuccessResponse("berhasil register", ToResponse(res, "register")))
+	}
+}
+
+func (us *userHandler) UpdateDataUser() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		var input UpdateFormat
 		input.Fullname = c.FormValue("fullname")
 		input.Username = c.FormValue("username")
 		input.Email = c.FormValue("email")
@@ -108,24 +125,7 @@ func (us *userHandler) RegiterUser() echo.HandlerFunc {
 		}
 		_, _ = uploader.UploadWithContext(context.Background(), inputData)
 		input.UserPicture = file.Filename
-
 		cnv := ToDomain(input)
-		res, err := us.srv.AddUser(cnv)
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, FailedResponse(err.Error()))
-		}
-
-		return c.JSON(http.StatusCreated, SuccessResponse("berhasil register", ToResponse(res, "register")))
-	}
-}
-
-func (us *userHandler) UpdateDataUser() echo.HandlerFunc {
-	return func(c echo.Context) error {
-		var updateData UpdateFormat
-		if err := c.Bind(&updateData); err != nil {
-			return c.JSON(http.StatusBadRequest, config.PARSE_DATA)
-		}
-		cnv := ToDomain(updateData)
 
 		userId := us.srv.ExtractToken(c)
 		res, err := us.srv.UpdateUser(cnv, userId)
