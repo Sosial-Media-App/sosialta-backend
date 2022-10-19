@@ -22,7 +22,6 @@ type userHandler struct {
 
 func New(e *echo.Echo, srv domain.Services) {
 	handler := userHandler{srv: srv}
-	e.GET("/users", handler.GetUser())
 	e.GET("/users/:username", handler.GetUser())
 	e.POST("/users", handler.RegiterUser())
 	e.POST("/login", handler.LoginUser())
@@ -35,7 +34,7 @@ func (us *userHandler) GetUser() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var resQry RegiterFormat
 		var myUser bool = false
-		resQry.Username = c.QueryParam("username")
+		resQry.Username = c.Param("username")
 		cnv := ToDomain(resQry)
 		res, err := us.srv.GetUser(cnv)
 		if err != nil {
