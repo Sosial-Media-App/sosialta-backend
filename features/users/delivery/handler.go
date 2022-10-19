@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/Sosial-Media-App/sosialta/config"
 	"github.com/Sosial-Media-App/sosialta/features/users/domain"
@@ -95,7 +96,7 @@ func (us *userHandler) UpdateDataUser() echo.HandlerFunc {
 		input.Email = c.FormValue("email")
 		input.Password = c.FormValue("password")
 		input.Phone = c.FormValue("phone")
-		input.Dob = c.FormValue("Dob")
+		input.Dob = c.FormValue("dob")
 
 		file, err := c.FormFile("file")
 		if err != nil {
@@ -124,7 +125,7 @@ func (us *userHandler) UpdateDataUser() echo.HandlerFunc {
 			// ContentType: aws.String("image/png"), // content type
 		}
 		_, _ = uploader.UploadWithContext(context.Background(), inputData)
-		input.UserPicture = file.Filename
+		input.UserPicture = "https://sosialtabucket.s3.ap-southeast-1.amazonaws.com/myfiles/" + strings.ReplaceAll(file.Filename, " ", "+")
 		cnv := ToDomain(input)
 
 		userId := us.srv.ExtractToken(c)
