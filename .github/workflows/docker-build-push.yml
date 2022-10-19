@@ -25,7 +25,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: sosialta:latest
+          tags: khalidrian/sosialta:latest
       - 
         name: executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@master
@@ -37,5 +37,5 @@ jobs:
           script: |
             docker stop prjku
             docker rm prjku
-            docker rmi sosialta
-            docker run --name prjku --link deployment:3306 -d -p 3000:3000 sosialta
+            docker rmi khalidrian/sosialta
+            docker run --name prjku --link deployment:3306 -d -p 3000:3000 khalidrian/sosialta
