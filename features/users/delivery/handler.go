@@ -78,6 +78,7 @@ func (us *userHandler) RegiterUser() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, config.PARSE_DATA)
 		}
 
+		input.UserPicture = "https://sosialtabucket.s3.ap-southeast-1.amazonaws.com/myfiles/Screenshot+(316).png"
 		cnv := ToDomain(input)
 		res, err := us.srv.AddUser(cnv)
 		if err != nil {
