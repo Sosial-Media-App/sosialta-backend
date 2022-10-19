@@ -50,7 +50,7 @@ func (cs *contentHandler) RegiterContent() echo.HandlerFunc {
 
 		s3Config := &aws.Config{
 			Region:      aws.String("ap-southeast-1"),
-			Credentials: credentials.NewStaticCredentials("AKIAUFHWMWYWKGW2OIUP", "WInFzSVwxTiaOmoOoLyQ7jtk0nAkuH9WNQc9zJDM", ""),
+			Credentials: credentials.NewStaticCredentials("", "", ""),
 		}
 
 		s3Session := session.New(s3Config)
@@ -100,7 +100,7 @@ func (cs *contentHandler) UpdateDataContent() echo.HandlerFunc {
 
 		s3Config := &aws.Config{
 			Region:      aws.String("ap-southeast-1"),
-			Credentials: credentials.NewStaticCredentials("AKIAUFHWMWYWKGW2OIUP", "WInFzSVwxTiaOmoOoLyQ7jtk0nAkuH9WNQc9zJDM", ""),
+			Credentials: credentials.NewStaticCredentials("", "", ""),
 		}
 
 		s3Session := session.New(s3Config)
