@@ -6,6 +6,7 @@ import (
 
 	"github.com/Sosial-Media-App/sosialta/config"
 	"github.com/Sosial-Media-App/sosialta/features/contents/domain"
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 )
@@ -49,17 +50,30 @@ func (srv *contentServices) AddContent(newContent domain.Core) (domain.Core, err
 	return res, nil
 }
 
-func (srv *contentServices) UpdateContent(updateData domain.Core, id uint) (domain.Core, error) {
+func (srv *contentServices) UpdateContent(updateData domain.Core) (domain.Core, error) {
+	res, err := srv.qry.Update(updateData)
 
-	return domain.Core{}, nil
+	if err != nil {
+		return domain.Core{}, errors.New(config.DATABASE_ERROR)
+	}
+
+	return res, nil
 }
 
 func (srv *contentServices) DeleteContent(id uint) error {
-
+	err := srv.qry.Delete(id)
+	if err != nil {
+		return errors.New("data not found")
+	}
 	return nil
 }
 
 func (srv *contentServices) ExtractToken(c echo.Context) uint {
+	token := c.Get("user").(*jwt.Token)
+	if token.Valid {
+		claim := token.Claims.(jwt.MapClaims)
+		return uint(claim["id"].(float64))
+	}
 
 	return 0
 }

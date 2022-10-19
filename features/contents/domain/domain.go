@@ -24,7 +24,7 @@ type DetailCore struct {
 
 type Repository interface {
 	Insert(newContent Core) (Core, error)
-	Update(updateData Core, id uint) (Core, error)
+	Update(updateData Core) (Core, error)
 	Delete(id uint) error
 	Get() ([]Core, error)
 	GetDetail(newContent Core) (Core, error)
@@ -34,7 +34,7 @@ type Services interface {
 	GetContent() ([]Core, error)
 	GetContentDetail(newContent Core) (Core, error)
 	AddContent(newContent Core) (Core, error)
-	UpdateContent(updateData Core, id uint) (Core, error)
+	UpdateContent(updateData Core) (Core, error)
 	DeleteContent(id uint) error
 	ExtractToken(c echo.Context) uint
 }

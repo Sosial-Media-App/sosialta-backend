@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"errors"
+
 	"github.com/Sosial-Media-App/sosialta/features/contents/domain"
 	"gorm.io/gorm"
 )
@@ -25,12 +27,25 @@ func (rq *repoQuery) Insert(newContent domain.Core) (domain.Core, error) {
 	return newContent, nil
 }
 
-func (rq *repoQuery) Update(updateData domain.Core, id uint) (domain.Core, error) {
-
-	return domain.Core{}, nil
+func (rq *repoQuery) Update(updateData domain.Core) (domain.Core, error) {
+	var cnv Content = FromDomain(updateData)
+	if err := rq.db.Where("id=?", updateData.ID).Updates(&cnv).Error; err != nil {
+		return domain.Core{}, err
+	}
+	// selesai dari DB
+	updateData = ToDomain(cnv)
+	return updateData, nil
 }
 
 func (rq *repoQuery) Delete(id uint) error {
+	err := rq.db.Where("id = ?", id).Delete(&Content{})
+	if err.Error != nil {
+		return errors.New("cant delete data")
+	}
+
+	if err.RowsAffected < 1 {
+		return errors.New("row not affected")
+	}
 
 	return nil
 }

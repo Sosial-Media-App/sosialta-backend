@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/Sosial-Media-App/sosialta/features/contents/domain"
@@ -32,7 +33,7 @@ func (cs *contentHandler) RegiterContent() echo.HandlerFunc {
 		var input RegiterFormat
 		input.StoryType = c.FormValue("story_type")
 		input.StoryDetail = c.FormValue("story_detail")
-		input.IdUser = 1
+		input.IdUser = cs.srv.ExtractToken(c)
 		file, err := c.FormFile("file")
 		if err != nil {
 			return err
@@ -75,7 +76,51 @@ func (cs *contentHandler) RegiterContent() echo.HandlerFunc {
 
 func (cs *contentHandler) UpdateDataContent() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return c.JSON(http.StatusInternalServerError, errors.New("test"))
+		var input UpdateFormat
+		input.StoryDetail = c.FormValue("story_detail")
+		ID := c.Param("id")
+		u64, err := strconv.ParseUint(ID, 10, 32)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, FailedResponse("Wrong id content"))
+		}
+		input.ID = uint(u64)
+		file, err := c.FormFile("file")
+		if err != nil {
+			return err
+		}
+
+		src, err := file.Open()
+		if err != nil {
+			return err
+		} else {
+			input.StoryPicture = "https://sosialtabucket.s3.ap-southeast-1.amazonaws.com/myfiles/" + strings.ReplaceAll(file.Filename, " ", "+")
+		}
+		defer src.Close()
+
+		s3Config := &aws.Config{
+			Region:      aws.String("ap-southeast-1"),
+			Credentials: credentials.NewStaticCredentials("AKIAUFHWMWYWKGW2OIUP", "WInFzSVwxTiaOmoOoLyQ7jtk0nAkuH9WNQc9zJDM", ""),
+		}
+
+		s3Session := session.New(s3Config)
+
+		uploader := s3manager.NewUploader(s3Session)
+		inputData := &s3manager.UploadInput{
+			Bucket: aws.String("sosialtabucket"),           // bucket's name
+			Key:    aws.String("myfiles/" + file.Filename), // files destination location
+			Body:   src,                                    // content of the file
+			// ACL:    aws.String("Objects - List"),
+			// ContentType: aws.String("image/png"), // content type
+		}
+		_, _ = uploader.UploadWithContext(context.Background(), inputData)
+
+		cnv := ToDomain(input)
+		res, err := cs.srv.UpdateContent(cnv)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, FailedResponse(err.Error()))
+		}
+
+		return c.JSON(http.StatusCreated, SuccessResponse("berhasil update", ToResponse(res, "update")))
 	}
 }
 
@@ -91,6 +136,18 @@ func (cs *contentHandler) GetContent() echo.HandlerFunc {
 
 func (cs *contentHandler) DeactiveContent() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return c.JSON(http.StatusInternalServerError, errors.New("test"))
+		cnv, errCnv := strconv.Atoi(c.Param("id"))
+		if errCnv != nil {
+			return c.JSON(http.StatusInternalServerError, "cant convert id")
+		}
+
+		err := cs.srv.DeleteContent(uint(cnv))
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, err.Error())
+		}
+
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"message": "success delete data.",
+		})
 	}
 }
