@@ -16,8 +16,13 @@ func New(dbConn *gorm.DB) domain.Repository {
 }
 
 func (rq *repoQuery) Insert(newContent domain.Core) (domain.Core, error) {
-
-	return domain.Core{}, nil
+	var cnv Content = FromDomain(newContent)
+	if err := rq.db.Create(&cnv).Error; err != nil {
+		return domain.Core{}, err
+	}
+	// selesai dari DB
+	newContent = ToDomain(cnv)
+	return newContent, nil
 }
 
 func (rq *repoQuery) Update(updateData domain.Core, id uint) (domain.Core, error) {

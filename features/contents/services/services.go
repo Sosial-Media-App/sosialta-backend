@@ -1,6 +1,9 @@
 package services
 
 import (
+	"errors"
+
+	"github.com/Sosial-Media-App/sosialta/config"
 	"github.com/Sosial-Media-App/sosialta/features/contents/domain"
 	"github.com/labstack/echo/v4"
 )
@@ -26,8 +29,13 @@ func (srv *contentServices) GetContentDetail(newContent domain.Core) (domain.Cor
 }
 
 func (srv *contentServices) AddContent(newContent domain.Core) (domain.Core, error) {
+	res, err := srv.qry.Insert(newContent)
 
-	return domain.Core{}, nil
+	if err != nil {
+		return domain.Core{}, errors.New(config.DUPLICATED_DATA)
+	}
+
+	return res, nil
 }
 
 func (srv *contentServices) UpdateContent(updateData domain.Core, id uint) (domain.Core, error) {
