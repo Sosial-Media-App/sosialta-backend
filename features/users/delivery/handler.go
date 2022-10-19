@@ -3,6 +3,7 @@ package delivery
 import (
 	"context"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/Sosial-Media-App/sosialta/config"
@@ -112,8 +113,8 @@ func (us *userHandler) UpdateDataUser() echo.HandlerFunc {
 		defer src.Close()
 
 		s3Config := &aws.Config{
-			Region:      aws.String("ap-southeast-1"),
-			Credentials: credentials.NewStaticCredentials("", "", ""),
+			Region:      aws.String(os.Getenv("AWS_REGION")),
+			Credentials: credentials.NewStaticCredentials(os.Getenv("AWS_USER"), os.Getenv("AWS_KEY"), ""),
 		}
 
 		s3Session := session.New(s3Config)
