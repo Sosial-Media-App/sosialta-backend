@@ -60,6 +60,6 @@ func ToResponseContent(core interface{}, code string) interface{} {
 		arr = append(arr, GetContentResponse{ID: cnv.ID, IdUser: cnv.IdUser, StoryType: cnv.StoryType,
 			StoryDetail: cnv.StoryDetail, StoryPicture: cnv.StoryPicture, DetailCore: cnv.DetailCore})
 	}
-
+	res = arr
 	return res
 }

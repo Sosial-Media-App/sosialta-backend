@@ -85,7 +85,7 @@ func (cs *contentHandler) GetContent() echo.HandlerFunc {
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, errors.New("test"))
 		}
-		return c.JSON(http.StatusCreated, SuccessResponse("Success get Vendor", ToResponseContent(res, "all")))
+		return c.JSON(http.StatusCreated, SuccessResponse("Success get data", ToResponseContent(res, "all")))
 	}
 }
 
