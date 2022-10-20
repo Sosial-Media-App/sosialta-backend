@@ -111,8 +111,7 @@ func (cs *contentHandler) UpdateDataContent() echo.HandlerFunc {
 			Bucket: aws.String("sosialtabucket"),           // bucket's name
 			Key:    aws.String("myfiles/" + file.Filename), // files destination location
 			Body:   src,                                    // content of the file
-			// ACL:    aws.String("Objects - List"),
-			// ContentType: aws.String("image/png"), // content type
+
 		}
 		_, _ = uploader.UploadWithContext(context.Background(), inputData)
 
