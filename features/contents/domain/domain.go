@@ -5,6 +5,7 @@ import "github.com/labstack/echo/v4"
 type Core struct {
 	ID           uint
 	IdUser       uint
+	Username     string
 	StoryType    string
 	StoryDetail  string
 	StoryPicture string
@@ -14,6 +15,7 @@ type Core struct {
 type CommentCore struct {
 	ID        uint
 	IdUser    uint
+	Username  string
 	IdContent uint
 	Comment   string
 }
@@ -26,12 +28,12 @@ type Repository interface {
 	Insert(newContent Core) (Core, error)
 	Update(updateData Core) (Core, error)
 	Delete(id uint) error
-	Get() ([]Core, error)
+	Get(page int) ([]Core, error)
 	GetDetail(id uint) (Core, error)
 }
 
 type Services interface {
-	GetContent() ([]Core, error)
+	GetContent(page int) ([]Core, error)
 	GetContentDetail(id uint) (Core, error)
 	AddContent(newContent Core) (Core, error)
 	UpdateContent(updateData Core) (Core, error)

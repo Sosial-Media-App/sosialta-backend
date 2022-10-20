@@ -45,8 +45,8 @@ func (cs *commentService) AddComment(newComment domain.Core) (domain.Core, error
 	return res, nil
 }
 
-func (cs *commentService) UpdateComment(updateData domain.Core, id uint) (domain.Core, error) {
-	res, err := cs.qry.Update(updateData, id)
+func (cs *commentService) UpdateComment(updateData domain.Core) (domain.Core, error) {
+	res, err := cs.qry.Update(updateData)
 	if err != nil {
 		if strings.Contains(err.Error(), config.DUPLICATED_DATA) {
 			return domain.Core{}, errors.New(config.REJECTED_DATA)

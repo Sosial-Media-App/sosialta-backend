@@ -21,6 +21,7 @@ type User struct {
 type Content struct {
 	gorm.Model
 	IdUser       uint
+	Username     string
 	StoryType    string
 	StoryDetail  string
 	StoryPicture string
@@ -30,6 +31,7 @@ type Content struct {
 type Comment struct {
 	gorm.Model
 	IdUser    uint
+	Username  string
 	IdContent uint
 	Comment   string
 }

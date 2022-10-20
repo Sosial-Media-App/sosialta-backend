@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"strings"
 
 	"github.com/Sosial-Media-App/sosialta/config"
 	"github.com/Sosial-Media-App/sosialta/features/contents/domain"
@@ -21,15 +20,11 @@ func New(repo domain.Repository) domain.Services {
 	}
 }
 
-func (srv *contentServices) GetContent() ([]domain.Core, error) {
-	res, err := srv.qry.Get()
+func (srv *contentServices) GetContent(page int) ([]domain.Core, error) {
+	res, err := srv.qry.Get(page)
 	if err != nil {
 		log.Error(err.Error())
-		if strings.Contains(err.Error(), "table") {
-			return nil, errors.New("database error")
-		} else if strings.Contains(err.Error(), "found") {
-			return nil, errors.New("no data")
-		}
+		return nil, errors.New(config.NO_DATA)
 	}
 
 	return res, nil
@@ -38,12 +33,7 @@ func (srv *contentServices) GetContent() ([]domain.Core, error) {
 func (srv *contentServices) GetContentDetail(id uint) (domain.Core, error) {
 	res, err := srv.qry.GetDetail(id)
 	if err != nil {
-		log.Error(err.Error())
-		if strings.Contains(err.Error(), "table") {
-			return domain.Core{}, errors.New("database error")
-		} else if strings.Contains(err.Error(), "found") {
-			return domain.Core{}, errors.New("no data")
-		}
+		return domain.Core{}, errors.New(config.NO_DATA)
 	}
 	return res, nil
 }
@@ -71,7 +61,7 @@ func (srv *contentServices) UpdateContent(updateData domain.Core) (domain.Core, 
 func (srv *contentServices) DeleteContent(id uint) error {
 	err := srv.qry.Delete(id)
 	if err != nil {
-		return errors.New("data not found")
+		return errors.New(config.NO_DATA)
 	}
 	return nil
 }

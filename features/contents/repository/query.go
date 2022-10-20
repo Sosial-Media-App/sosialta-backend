@@ -19,6 +19,9 @@ func New(dbConn *gorm.DB) domain.Repository {
 
 func (rq *repoQuery) Insert(newContent domain.Core) (domain.Core, error) {
 	var cnv Content = FromDomain(newContent)
+	var tempUser User
+	rq.db.Where("id=?", cnv.IdUser).First(&tempUser)
+	cnv.Username = tempUser.Username
 	if err := rq.db.Create(&cnv).Error; err != nil {
 		return domain.Core{}, err
 	}
@@ -49,15 +52,16 @@ func (rq *repoQuery) Delete(id uint) error {
 
 	return nil
 }
-func (rq *repoQuery) Get() ([]domain.Core, error) {
+func (rq *repoQuery) Get(page int) ([]domain.Core, error) {
 	var resQry []Content
 	var resQryComment []Comment
-	if err := rq.db.Limit(20).Order("created_at desc").Find(&resQry).Error; err != nil {
-		return nil, err
-	}
-	// selesai dari DB
-	for _, val := range resQry {
-		if err := rq.db.Limit(3).Order("created_at desc").Find(&resQryComment, "id_content = ?", val.ID).Error; err != nil {
+	if page == 0 {
+		if err := rq.db.Limit(20).Order("created_at desc").Find(&resQry).Error; err != nil {
+			return nil, err
+		}
+	} else {
+		i := page * 20
+		if err := rq.db.Offset(i).Limit(20).Order("created_at desc").Find(&resQry).Error; err != nil {
 			return nil, err
 		}
 	}

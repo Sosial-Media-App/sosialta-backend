@@ -17,6 +17,7 @@ type Core struct {
 type ContentCore struct {
 	ID           uint
 	IdUser       uint
+	Username     string
 	StoryType    string
 	StoryDetail  string
 	StoryPicture string

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/Sosial-Media-App/sosialta/config"
 	"github.com/Sosial-Media-App/sosialta/features/users/domain"
@@ -101,34 +102,31 @@ func (us *userHandler) UpdateDataUser() echo.HandlerFunc {
 		input.Phone = c.FormValue("phone")
 		input.Dob = c.FormValue("dob")
 
-		file, err := c.FormFile("file")
-		if err != nil {
-			return err
-		}
+		file, err := c.FormFile("user_picture")
+		if err == nil {
+			src, err := file.Open()
+			if err != nil {
+				input.UserPicture = "https://sosialtabucket.s3.ap-southeast-1.amazonaws.com/myfiles/casting-couch.jpg"
+			}
+			defer src.Close()
 
-		src, err := file.Open()
-		if err != nil {
-			return err
-		}
-		defer src.Close()
+			s3Config := &aws.Config{
+				Region:      aws.String(os.Getenv("AWS_REGION")),
+				Credentials: credentials.NewStaticCredentials(os.Getenv("AWS_USER"), os.Getenv("AWS_KEY"), ""),
+			}
+			temp := time.Now().Format("02 Jan 06 15:04")
+			input.UserPicture = "https://sosialtabucket.s3.ap-southeast-1.amazonaws.com/myfiles/" + temp + strings.ReplaceAll(file.Filename, " ", "+")
+			s3Session := session.New(s3Config)
 
-		s3Config := &aws.Config{
-			Region:      aws.String(os.Getenv("AWS_REGION")),
-			Credentials: credentials.NewStaticCredentials(os.Getenv("AWS_USER"), os.Getenv("AWS_KEY"), ""),
-		}
+			uploader := s3manager.NewUploader(s3Session)
+			inputData := &s3manager.UploadInput{
+				Bucket: aws.String("sosialtabucket"),                  // bucket's name
+				Key:    aws.String("myfiles/" + temp + file.Filename), // files destination location
+				Body:   src,                                           // content of the file
 
-		s3Session := session.New(s3Config)
-
-		uploader := s3manager.NewUploader(s3Session)
-		inputData := &s3manager.UploadInput{
-			Bucket: aws.String("sosialtabucket"),           // bucket's name
-			Key:    aws.String("myfiles/" + file.Filename), // files destination location
-			Body:   src,                                    // content of the file
-			// ACL:    aws.String("Objects - List"),
-			// ContentType: aws.String("image/png"), // content type
+			}
+			_, _ = uploader.UploadWithContext(context.Background(), inputData)
 		}
-		_, _ = uploader.UploadWithContext(context.Background(), inputData)
-		input.UserPicture = "https://sosialtabucket.s3.ap-southeast-1.amazonaws.com/myfiles/" + strings.ReplaceAll(file.Filename, " ", "+")
 		cnv := ToDomain(input)
 
 		userId := us.srv.ExtractToken(c)

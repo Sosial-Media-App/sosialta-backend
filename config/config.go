@@ -3,9 +3,13 @@ package config
 import (
 	"os"
 	"strconv"
+	"sync"
 
+	"github.com/joho/godotenv"
 	"github.com/labstack/gommon/log"
 )
+
+var lock = &sync.Mutex{}
 
 type AppConfig struct {
 	DBPort    uint
@@ -17,6 +21,8 @@ type AppConfig struct {
 }
 
 func NewConfig() *AppConfig {
+	lock.Lock()
+	defer lock.Unlock()
 	cfg := initConfig()
 	if cfg == nil {
 		log.Fatal("Cannot run configuration setup")
@@ -28,7 +34,8 @@ func NewConfig() *AppConfig {
 func initConfig() *AppConfig {
 	var app AppConfig
 
-	// godotenv.Load("config.env")
+	/* Buka tag comment untuk run app di localhost. */
+	godotenv.Load("config.env")
 
 	app.DBUser = os.Getenv("DB_USER")
 	app.DBPwd = os.Getenv("DB_PWD")
