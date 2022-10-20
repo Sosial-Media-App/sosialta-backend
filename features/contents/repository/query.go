@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"log"
 
 	"github.com/Sosial-Media-App/sosialta/features/contents/domain"
 	"gorm.io/gorm"
@@ -49,19 +50,30 @@ func (rq *repoQuery) Delete(id uint) error {
 
 	return nil
 }
-func (rq *repoQuery) Get() ([]domain.Core, error) {
+func (rq *repoQuery) Get(page int) ([]domain.Core, error) {
 	var resQry []Content
 	var resQryComment []Comment
-	if err := rq.db.Limit(20).Order("created_at desc").Find(&resQry).Error; err != nil {
-		return nil, err
-	}
-	// selesai dari DB
-	for _, val := range resQry {
-		if err := rq.db.Limit(3).Order("created_at desc").Find(&resQryComment, "id_content = ?", val.ID).Error; err != nil {
+	if page == 0 {
+		if err := rq.db.Limit(20).Order("created_at desc").Find(&resQry).Error; err != nil {
+			return nil, err
+		}
+	} else {
+		i := page * 20
+		log.Println("ini i:", i)
+		if err := rq.db.Offset(i).Limit(20).Order("created_at desc").Find(&resQry).Error; err != nil {
 			return nil, err
 		}
 	}
+	log.Println("ini resqry", resQry)
+	// selesai dari DB
+	// for _, val := range resQry {
+	// 	if err := rq.db.Limit(3).Order("created_at desc").Find(&resQryComment, "id_content = ?", val.ID).Error; err != nil {
+	// 		return nil, err
+	// 	}
+	// }
+	log.Println("ini qry command", resQryComment)
 	res := ToDomainArray(resQry, resQryComment)
+	log.Println("ini res aja", res)
 	return res, nil
 }
 

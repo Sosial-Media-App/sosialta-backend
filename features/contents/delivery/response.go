@@ -1,6 +1,10 @@
 package delivery
 
-import "github.com/Sosial-Media-App/sosialta/features/contents/domain"
+import (
+	"log"
+
+	"github.com/Sosial-Media-App/sosialta/features/contents/domain"
+)
 
 func SuccessResponse(msg string, data interface{}) map[string]interface{} {
 	return map[string]interface{}{
@@ -65,5 +69,7 @@ func ToResponseContent(core interface{}, code string) interface{} {
 			StoryDetail: cnv.StoryDetail, StoryPicture: cnv.StoryPicture, DetailCore: cnv.DetailCore})
 	}
 	res = arr
+	log.Println("ini arr", arr)
+	log.Println("ini res", res)
 	return res
 }

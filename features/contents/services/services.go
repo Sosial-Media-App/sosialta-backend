@@ -20,8 +20,8 @@ func New(repo domain.Repository) domain.Services {
 	}
 }
 
-func (srv *contentServices) GetContent() ([]domain.Core, error) {
-	res, err := srv.qry.Get()
+func (srv *contentServices) GetContent(page int) ([]domain.Core, error) {
+	res, err := srv.qry.Get(page)
 	if err != nil {
 		log.Error(err.Error())
 		return nil, errors.New(config.NO_DATA)

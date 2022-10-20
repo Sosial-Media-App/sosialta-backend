@@ -3,6 +3,7 @@ package delivery
 import (
 	"context"
 	"errors"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -30,42 +31,52 @@ func New(e *echo.Echo, srv domain.Services) {
 	e.DELETE("/contents/:id", handler.DeactiveContent(), middleware.JWT([]byte("Sosialta!!!12")))
 }
 
+func (cs *contentHandler) GetContent() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		page, err := strconv.Atoi(c.QueryParam("page"))
+		if err != nil {
+			page = 0
+		}
+		res, err := cs.srv.GetContent(page)
+		log.Println(res, err)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, errors.New("test"))
+		}
+		return c.JSON(http.StatusCreated, SuccessResponse("Success get data", ToResponseContent(res, "all")))
+	}
+}
+
 func (cs *contentHandler) RegiterContent() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var input RegiterFormat
 		input.StoryType = c.FormValue("story_type")
 		input.StoryDetail = c.FormValue("story_detail")
 		input.IdUser = cs.srv.ExtractToken(c)
-		file, err := c.FormFile("file")
-		if err != nil {
-			return err
-		}
+		file, err := c.FormFile("story_picture")
+		if err == nil {
+			src, err := file.Open()
+			if err != nil {
+				input.StoryPicture = "https://sosialtabucket.s3.ap-southeast-1.amazonaws.com/myfiles/casting-couch.jpg"
+			}
+			defer src.Close()
 
-		src, err := file.Open()
-		if err != nil {
-			return err
-		} else {
+			s3Config := &aws.Config{
+				Region:      aws.String(os.Getenv("AWS_REGION")),
+				Credentials: credentials.NewStaticCredentials(os.Getenv("AWS_USER"), os.Getenv("AWS_KEY"), ""),
+			}
+
 			input.StoryPicture = "https://sosialtabucket.s3.ap-southeast-1.amazonaws.com/myfiles/" + strings.ReplaceAll(file.Filename, " ", "+")
+			s3Session := session.New(s3Config)
+
+			uploader := s3manager.NewUploader(s3Session)
+			inputData := &s3manager.UploadInput{
+				Bucket: aws.String("sosialtabucket"),           // bucket's name
+				Key:    aws.String("myfiles/" + file.Filename), // files destination location
+				Body:   src,                                    // content of the file
+
+			}
+			_, _ = uploader.UploadWithContext(context.Background(), inputData)
 		}
-		defer src.Close()
-
-		s3Config := &aws.Config{
-			Region:      aws.String(os.Getenv("AWS_REGION")),
-			Credentials: credentials.NewStaticCredentials(os.Getenv("AWS_USER"), os.Getenv("AWS_KEY"), ""),
-		}
-
-		s3Session := session.New(s3Config)
-
-		uploader := s3manager.NewUploader(s3Session)
-		inputData := &s3manager.UploadInput{
-			Bucket: aws.String("sosialtabucket"),           // bucket's name
-			Key:    aws.String("myfiles/" + file.Filename), // files destination location
-			Body:   src,                                    // content of the file
-			// ACL:    aws.String("Objects - List"),
-			// ContentType: aws.String("image/png"), // content type
-		}
-		_, _ = uploader.UploadWithContext(context.Background(), inputData)
-
 		cnv := ToDomain(input)
 		res, err := cs.srv.AddContent(cnv)
 		if err != nil {
@@ -80,40 +91,36 @@ func (cs *contentHandler) UpdateDataContent() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var input UpdateFormat
 		input.StoryDetail = c.FormValue("story_detail")
-		ID := c.Param("id")
-		u64, err := strconv.ParseUint(ID, 10, 32)
+		id, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, FailedResponse("Wrong id content"))
+			return c.JSON(http.StatusInternalServerError, FailedResponse("Wrong page number"))
 		}
-		input.ID = uint(u64)
-		file, err := c.FormFile("file")
-		if err != nil {
-			return err
-		}
+		input.ID = uint(id)
+		file, err := c.FormFile("story_picture")
+		if err == nil {
+			src, err := file.Open()
+			if err != nil {
+				input.StoryPicture = "https://sosialtabucket.s3.ap-southeast-1.amazonaws.com/myfiles/casting-couch.jpg"
+			}
+			defer src.Close()
 
-		src, err := file.Open()
-		if err != nil {
-			return err
-		} else {
+			s3Config := &aws.Config{
+				Region:      aws.String(os.Getenv("AWS_REGION")),
+				Credentials: credentials.NewStaticCredentials(os.Getenv("AWS_USER"), os.Getenv("AWS_KEY"), ""),
+			}
+
 			input.StoryPicture = "https://sosialtabucket.s3.ap-southeast-1.amazonaws.com/myfiles/" + strings.ReplaceAll(file.Filename, " ", "+")
+			s3Session := session.New(s3Config)
+
+			uploader := s3manager.NewUploader(s3Session)
+			inputData := &s3manager.UploadInput{
+				Bucket: aws.String("sosialtabucket"),           // bucket's name
+				Key:    aws.String("myfiles/" + file.Filename), // files destination location
+				Body:   src,                                    // content of the file
+
+			}
+			_, _ = uploader.UploadWithContext(context.Background(), inputData)
 		}
-		defer src.Close()
-
-		s3Config := &aws.Config{
-			Region:      aws.String(os.Getenv("AWS_REGION")),
-			Credentials: credentials.NewStaticCredentials(os.Getenv("AWS_USER"), os.Getenv("AWS_KEY"), ""),
-		}
-
-		s3Session := session.New(s3Config)
-
-		uploader := s3manager.NewUploader(s3Session)
-		inputData := &s3manager.UploadInput{
-			Bucket: aws.String("sosialtabucket"),           // bucket's name
-			Key:    aws.String("myfiles/" + file.Filename), // files destination location
-			Body:   src,                                    // content of the file
-
-		}
-		_, _ = uploader.UploadWithContext(context.Background(), inputData)
 
 		cnv := ToDomain(input)
 		res, err := cs.srv.UpdateContent(cnv)
@@ -122,16 +129,6 @@ func (cs *contentHandler) UpdateDataContent() echo.HandlerFunc {
 		}
 
 		return c.JSON(http.StatusCreated, SuccessResponse("berhasil update", ToResponse(res, "update")))
-	}
-}
-
-func (cs *contentHandler) GetContent() echo.HandlerFunc {
-	return func(c echo.Context) error {
-		res, err := cs.srv.GetContent()
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, errors.New("test"))
-		}
-		return c.JSON(http.StatusCreated, SuccessResponse("Success get data", ToResponseContent(res, "all")))
 	}
 }
 

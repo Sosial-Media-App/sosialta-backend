@@ -1,5 +1,4 @@
 *.git
-*_test.go
 *.html
 *.out
 config.env

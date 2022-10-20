@@ -26,13 +26,13 @@ func (_m *Repository) Delete(id uint) error {
 	return r0
 }
 
-// Get provides a mock function with given fields:
-func (_m *Repository) Get() ([]domain.Core, error) {
-	ret := _m.Called()
+// Get provides a mock function with given fields: page
+func (_m *Repository) Get(page int) ([]domain.Core, error) {
+	ret := _m.Called(page)
 
 	var r0 []domain.Core
-	if rf, ok := ret.Get(0).(func() []domain.Core); ok {
-		r0 = rf()
+	if rf, ok := ret.Get(0).(func(int) []domain.Core); ok {
+		r0 = rf(page)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]domain.Core)
@@ -40,8 +40,8 @@ func (_m *Repository) Get() ([]domain.Core, error) {
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
+	if rf, ok := ret.Get(1).(func(int) error); ok {
+		r1 = rf(page)
 	} else {
 		r1 = ret.Error(1)
 	}

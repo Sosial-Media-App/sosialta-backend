@@ -1,0 +1,893 @@
+openapi: 3.0.3
+info:
+  title: Social Media App
+  description: APIs Documentation for Social Media App.
+  version: 1.0.0
+  contact:
+    name: Group Project 3
+    email: mhmd.jauhari@gmail.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/MHMDJAUHARI/Social-Media-App/1.0.0
+  - description: Link Project
+    url: http://3.0.183.167:3000/
+tags:
+  - name: Auth 
+    description: Endpoint for Authentications feature
+  - name: User
+    description: Endpoint for manages Users feature
+  - name: Content 
+    description: Endpoint for manages Contents posting feature
+  - name: Comment 
+    description: Endpoint for manages Comments feature
+paths:
+  /login:
+    post:
+      summary: Authentication for Registered user.
+      tags:
+        - "Auth"
+      requestBody:
+        $ref: "#/components/requestBodies/LoginRequest"
+      responses:
+        "200":
+          description: Success login.
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Success Login."
+                  data:
+                    $ref: "#/components/schemas/LoginResponse"
+        "400":
+          $ref: "#/components/responses/400"
+        "500":
+          $ref: "#/components/responses/500"
+  /users/{username}:
+     get:
+      summary: Show user's profile by Username.
+      tags: 
+        - "User"
+      parameters:
+      - in: path
+        name: username
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+        description: "Username"
+      responses:
+        "200":
+          description: Status OK.
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Success show all data."
+                  data:
+                    $ref: "#/components/schemas/UserByIDResponse"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "500":
+          $ref: "#/components/responses/500"
+  /users:
+    post:
+      summary: Register for new user's data.
+      tags: 
+        - "User"
+      requestBody:
+        $ref: "#/components/requestBodies/UserRequest"
+      responses:
+        "201":
+          description: Status Created.
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Success insert data."
+                  data:
+                    $ref: "#/components/schemas/UserResponse"
+        "400":
+          $ref: "#/components/responses/400"
+        "500":
+          $ref: "#/components/responses/500"
+    get:
+      summary: Show next pages my content posts.
+      parameters:
+        - in: query
+          name: page
+          required: true
+          schema:
+            type: integer
+      tags:
+        - "User"
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: "Success On Generate Data"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseArr"
+              example:
+                data:
+                  - id: 21
+                    username: "sosialta" 
+                    story_type: "article"
+                    story_detail: |
+                                    "saya adalah seorang programmer yang mengerjakan backend, sekarang saya sedang mengerjakan contoh api.
+                                    mungkin ada kekurangan mohon dimaklumi, lebih dan kurang saya mohon maad, terima kasih atas perhatiannya
+                                    wassalamuaikum wr. wb."
+                    story_picture: "/src/pic/saya.jpg"
+                    comment: 
+                      - username: "samemitama"
+                        comment: "bagus sekali artikelnya"
+                  - id: 22
+                    username: "sosialta" 
+                    story_type: "story"
+                    story_detail: "saya malas"
+                    story_picture: ""
+                    comment: 
+                      - username: "samemitama"
+                        comment: "bagus sekali artikelnya"
+        "400":
+          $ref: "#/components/responses/400"
+        "500":
+          $ref: "#/components/responses/500"
+    put:
+      summary: Update user's data by ID.
+      tags:
+        - "User"
+      security:
+        - bearerAuth: []
+      requestBody:
+        $ref: "#/components/requestBodies/UserUpdateRequest"
+      responses:
+        "200":
+          description: Status OK.
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Success update data."
+                  data:
+                    $ref: "#/components/schemas/UserUpdateResponse"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "500":
+          $ref: "#/components/responses/500"
+    delete:
+      summary: Delete user by ID.
+      tags:
+        - "User"
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Status OK.
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Success delete data."
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "500":
+          $ref: "#/components/responses/500"
+  /contents:
+    get:
+      summary: Show latest 10 contents posts.
+      parameters:
+        - in: query
+          name: page
+          required: true
+          schema:
+            type: integer
+          description: Show all contents based on page number.
+      tags:
+        - "Content"
+      responses:
+        '200':
+          description: "Success On Generate Data"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseArr"
+              example:
+                data:  
+                  - id: 1
+                    username: "sosialta" 
+                    story_type: "article"
+                    story_detail: |
+                                    "saya adalah seorang programmer yang mengerjakan backend, sekarang saya sedang mengerjakan contoh api.
+                                    mungkin ada kekurangan mohon dimaklumi, lebih dan kurang saya mohon maad, terima kasih atas perhatiannya
+                                    wassalamuaikum wr. wb."
+                    story_picture: "/src/pic/saya.jpg"
+                    comment: 
+                      - username: "samemitama"
+                        comment: "bagus sekali artikelnya"
+                  - id: 2
+                    username: "samemitama" 
+                    story_type: "story"
+                    story_detail: "saya malas"
+                    story_picture: ""
+                    comment: 
+                      - username: "samemitama"
+                        comment: "bagus sekali artikelnya"
+        "400":
+          $ref: "#/components/responses/400"
+        "500":
+          $ref: "#/components/responses/500"
+    post:
+      summary: Create new content post.
+      tags:
+        - "Content"
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+            multipart/form-data:
+              schema:
+                $ref: "#/components/schemas/ContentRequest"
+              example:
+                story_type: "article"
+                story_detail: |
+                                "saya adalah seorang programmer yang mengerjakan backend, sekarang saya sedang mengerjakan contoh api.
+                                mungkin ada kekurangan mohon dimaklumi, lebih dan kurang saya mohon maad, terima kasih atas perhatiannya
+                                wassalamuaikum wr. wb."
+                story_picture: "/src/pic/saya.jpg"
+      responses:
+        "200":
+          description: Success Post.
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/ResponseObject"
+              example:
+                message: "Success Post"
+                data: 
+                  id: 1
+                  username: "sosialta" 
+                  story_type: "article"
+                  story_detail: |
+                                  "saya adalah seorang programmer yang mengerjakan backend, sekarang saya sedang mengerjakan contoh api.
+                                  mungkin ada kekurangan mohon dimaklumi, lebih dan kurang saya mohon maad, terima kasih atas perhatiannya
+                                  wassalamuaikum wr. wb."
+                  story_picture: "/src/pic/saya.jpg"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "500":
+          $ref: "#/components/responses/500"
+  /contents/{id_content}:
+    get:
+      summary: Show content detail posts.
+      parameters:
+        - in: path
+          name: id_content
+          required: true
+          schema:
+            type: integer
+      tags:
+        - "Content"
+      responses:
+        '200':
+          description: "Success On Generate Data"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseArr"
+              example:
+                data:  
+                  id: 1
+                  username: "sosialta" 
+                  story_type: "article"
+                  story_detail: |
+                                  "saya adalah seorang programmer yang mengerjakan backend, sekarang saya sedang mengerjakan contoh api.
+                                  mungkin ada kekurangan mohon dimaklumi, lebih dan kurang saya mohon maad, terima kasih atas perhatiannya
+                                  wassalamuaikum wr. wb."
+                  story_picture: "/src/pic/saya.jpg"
+                  comment: 
+                      - username: "samemitama"
+                        comment: "bagus sekali artikelnya"
+                      - username: "mitama"
+                        comment: "bagus sekali artikelnya"
+                      - username: "samemit"
+                        comment: "bagus sekali artikelnya"
+                      - username: "same"
+                        comment: "bagus sekali artikelnya"
+        "400":
+          $ref: "#/components/responses/400"
+        "500":
+          $ref: "#/components/responses/500"
+    put:
+      summary: Update content data by ID.
+      parameters:
+        - in: path
+          name: id_content
+          required: true
+          schema:
+            type: integer
+      tags:
+        - "Content"
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+            multipart/form-data:
+              schema:
+                $ref: "#/components/schemas/ContentRequest"
+              example:
+                story_type: "article"
+                story_detail: |
+                                "saya adalah seorang programmer yang mengerjakan backend, sekarang saya sedang mengerjakan contoh api.
+                                mungkin ada kekurangan mohon dimaklumi, lebih dan kurang saya mohon maad, terima kasih atas perhatiannya
+                                wassalamuaikum wr. wb."
+                story_picture: "/src/pic/saya.jpg"
+      responses:
+        "200":
+          description: Success Update.
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/ResponseObject"
+              example:
+                message: "Success Update"
+                data: 
+                  id: 1
+                  username: "sosialta" 
+                  story_type: "article"
+                  story_detail: |
+                                  "saya adalah seorang programmer yang mengerjakan backend, sekarang saya sedang mengerjakan contoh api.
+                                  mungkin ada kekurangan mohon dimaklumi, lebih dan kurang saya mohon maad, terima kasih atas perhatiannya
+                                  wassalamuaikum wr. wb."
+                  story_picture: "/src/pic/saya.jpg"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "500":
+          $ref: "#/components/responses/500"
+    delete:
+      summary: Delete content data by ID.
+      parameters:
+        - in: path
+          name: id_content
+          required: true
+          schema:
+            type: integer
+      tags:
+        - "Content"
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Success Delete.
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/ResponseObject"
+              example:
+                message: "Success Delete"
+                data: 
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "500":
+          $ref: "#/components/responses/500"
+  /comments:
+    post:
+      summary: Create new comment.
+      tags:
+        - "Comment"
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
+              example:
+                id_content: 3
+                comment: "kalau aku sih yes"
+      responses:
+        "200":
+          description: Success post comment.
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/ResponseObject"
+              example:
+                message: "Success post comment"
+                data :
+                  id: 1
+                  username: "samemitama"
+                  id_content: 3
+                  comment: "kalau aku sih yes"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "500":
+          $ref: "#/components/responses/500"
+    put:
+      summary: Update comment by ID.
+      tags:
+        - "Comment"
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
+              example:
+                id_content: 1
+                comment: "kalau aku sih no"
+      responses:
+        "200":
+          description: Success edit comment.
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/ResponseObject"
+              example:
+                message: "Success edit comment"
+                data :
+                  id: 1
+                  username: "samemitama"
+                  comment: "kalau aku sih no"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "500":
+          $ref: "#/components/responses/500"
+  /comments/{id_content}:
+    get:
+      summary: Get all comments.
+      parameters:
+        - in: path
+          name: id_content
+          required: true
+          schema:
+            type: integer
+      tags:
+        - "Comment"
+      responses:
+        '200':
+          description: "Success get comment"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseObject"
+              example:
+               message: "Success get comment"
+               data:
+                - username: "samemitama"
+                  comment: "bisa bisa"
+                - username: "jauhari"
+                  comment: "bisa apa ni?"
+                - username: "samemitama"
+                  comment: "bisain aja bos kekw"
+        "400":
+          $ref: "#/components/responses/400"
+        "500":
+          $ref: "#/components/responses/500"
+  /comments/{id_comment}:
+    delete:
+      summary: Delete comment by ID.
+      parameters:
+        - in: path
+          name: id_comment
+          required: true
+          schema:
+            type: integer
+      tags:
+        - "Comment"
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Success delete comment.
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/ResponseObject"
+              example:
+                message: "Success delete comment"
+                data : 
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "500":
+          $ref: "#/components/responses/500"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      description: JWT Authentication
+      scheme: bearer
+      bearerFormat: JWT
+  schemas: 
+    LoginReqSchema:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          example: "jauhari@mail.id"
+        password:
+          type: string
+          example: "qwerty12345"
+    UserReqSchema:
+      type: object
+      required:
+        - fullname
+        - username
+        - email
+        - password
+      properties:
+        fullname: 
+          type: string
+          example: "Muhammad Jauhari"
+        username:
+          type: string
+          example: "muhdjau"
+        email: 
+          type: string
+          example: "jauhari@mail.id"
+        password:
+          type: string
+          example: "qwerty12345"
+    UserUpdateReqSchema: 
+      type: object
+      properties:
+        fullname: 
+          type: string
+          example: "Muhammad Jauhari"
+        username:
+          type: string
+          example: "muhdjau"
+        email: 
+          type: string
+          example: "jauhari@mail.id"
+        password:
+          type: string
+          example: "qwerty12345"
+        phone:
+          type: string
+          example: "08123456789"
+        dob:
+          type: string
+          format: date-time
+          example: "1996-06-08"
+        user_picture:
+          type: string
+          example: www.cryptotimes.io/wp-content/uploads/2022/03/8817.jpg   
+    Content:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: uint
+        id_user:
+          type: integer
+          format: uint
+        story_type: 
+          type: string
+        story_detail: 
+          type: string
+        story_picture:  
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ContentRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: uint
+        id_user:
+          type: integer
+          format: uint
+        story_type: 
+          type: string
+        story_detail: 
+          type: string
+        story_picture:  
+          type: string
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: uint
+        id_content:
+          type: integer
+          format: uint
+        id_user:
+          type: integer
+          format: uint
+        comment: 
+          type: string
+    ResponseArr:
+      type: object
+      properties:
+        message:
+          type: string
+        data:
+          type: array
+          items: {}
+    ResponseObject:
+      type: object
+      properties:
+        message:
+          type: string
+        data:
+          items: {}   
+    LoginResponse:
+      type: object
+      required:
+        - "id"
+        - "fullname"
+        - "username"
+        - "email"
+        - "token"
+      properties:
+        id:
+          type: integer
+          example: 1
+        fullname: 
+          type: string
+          example: "Muhammad Jauhari"
+        username:
+          type: string
+          example: "muhdjau"
+        email:
+          type: string
+          example: "jauhari@mail.id"
+        token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+    UserResponse: 
+      type: object
+      required:
+        - "id"
+        - "fullname"
+        - "username"
+        - "email"
+        - "password"
+      properties:
+        id: 
+          type: integer
+          example: 1
+        fullname: 
+          type: string
+          example: "Muhammad Jauhari"
+        username: 
+          type: string
+          example: "muhdjau"
+        email: 
+          type: string
+          example: "jauhari@mail.id"
+        password: 
+          type: integer
+          format: password
+          example: "qwerty12345"
+    UserByIDResponse:
+      type: object
+      required:
+        - "id"
+        - "fullname"
+        - "username"
+        - "email"
+        - "password"
+        - "phone"
+        - "dob"
+        - "user_picture"
+        - "contents"
+      properties:
+        id: 
+          type: integer
+          example: 1
+        fullname: 
+          type: string
+          example: "Muhammad Jauhari"
+        username: 
+          type: string
+          example: "muhdjau"
+        email: 
+          type: string
+          example: "jauhari@mail.id"
+        password: 
+          type: integer
+          format: password
+          example: "qwerty12345"
+        phone: 
+          type: string
+          example: "08123456789"
+        dob: 
+          type: string
+          format: date-time
+          example: "1996-06-08"
+        user_picture:
+          type: string
+          example: "www.cryptotimes.io/wp-content/uploads/2022/03/8817.jpg"
+        contents:
+            example: 
+            - story_type: "article"
+              story_detail: |
+                  "saya adalah seorang programmer yang mengerjakan backend, sekarang saya sedang mengerjakan contoh api.
+                  ada kekurangan mohon dimaklumi, lebih dan kurang saya mohon maad, terima kasih atas perhatiannya
+                  wassalamuaikum wr. wb."
+              story_picture: "/src/pic/saya.jpg"
+    UserUpdateResponse:
+      type: object
+      required:
+        - "id"
+        - "fullname"
+        - "username"
+        - "email"
+        - "password"
+        - "phone"
+        - "dob"
+        - "user_picture"
+      properties:
+        id: 
+          type: integer
+          example: 1
+        fullname: 
+          type: string
+          example: "Muhammad Jauhari"
+        username: 
+          type: string
+          example: "muhdjau"
+        email: 
+          type: string
+          example: "jauhari@mail.id"
+        password: 
+          type: integer
+          format: password
+          example: "qwerty12345"
+        phone: 
+          type: string
+          example: "08123456789"
+        dob: 
+          type: string
+          format: date-time
+          example: "1996-06-08"
+        user_picture:
+          type: string
+          example: "www.cryptotimes.io/wp-content/uploads/2022/03/8817.jpg"
+  requestBodies:
+    LoginRequest:
+      description: A JSON object containing login information
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/LoginReqSchema" 
+    UserRequest:
+      description: A JSON object containing users information
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UserReqSchema"
+    UserUpdateRequest:
+      description: A Form object of multipart/form-data
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            $ref: "#/components/schemas/UserUpdateReqSchema"
+  responses:
+    "200":
+      description: Status OK.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message: 
+                type: string
+              status:
+                type: boolean
+          example:
+            message: Status OK.
+    "201":
+      description: Success post data.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message: 
+                type: string
+              status:
+                type: boolean
+          example:
+            message: Success post data.
+    "400":
+      description: Bad request error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message: 
+                type: string
+              status:
+                type: boolean
+          example:
+            message: An invalid client request.
+    "401":
+      description: Unauthorized access.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message: 
+                type: string
+              status:
+                type: boolean
+          example:
+            message: Missing or invalid access token.
+    "500":
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              message: 
+                type: string
+              status:
+                type: boolean
+          example:
+            message: There is problem on server.

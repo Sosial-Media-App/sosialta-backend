@@ -26,12 +26,12 @@ type Repository interface {
 	Insert(newContent Core) (Core, error)
 	Update(updateData Core) (Core, error)
 	Delete(id uint) error
-	Get() ([]Core, error)
+	Get(page int) ([]Core, error)
 	GetDetail(id uint) (Core, error)
 }
 
 type Services interface {
-	GetContent() ([]Core, error)
+	GetContent(page int) ([]Core, error)
 	GetContentDetail(id uint) (Core, error)
 	AddContent(newContent Core) (Core, error)
 	UpdateContent(updateData Core) (Core, error)
