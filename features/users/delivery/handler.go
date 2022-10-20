@@ -109,8 +109,8 @@ func (us *userHandler) UpdateDataUser() echo.HandlerFunc {
 		defer src.Close()
 
 		s3Config := &aws.Config{
-			Region:      aws.String("ap-southeast-1"),
-			Credentials: credentials.NewStaticCredentials("AKIAUFHWMWYWKGW2OIUP", "WInFzSVwxTiaOmoOoLyQ7jtk0nAkuH9WNQc9zJDM", ""),
+			Region:      aws.String(""),
+			Credentials: credentials.NewStaticCredentials("", "", ""),
 		}
 
 		s3Session := session.New(s3Config)
