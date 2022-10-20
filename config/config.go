@@ -28,6 +28,7 @@ func NewConfig() *AppConfig {
 func initConfig() *AppConfig {
 	var app AppConfig
 
+	/* Buka tag comment untuk run app di localhost. */
 	// godotenv.Load("config.env")
 
 	app.DBUser = os.Getenv("DB_USER")

@@ -39,9 +39,9 @@ func (rq *repoQuery) Insert(newComment domain.Core) (domain.Core, error) {
 	return newComment, nil
 }
 
-func (rq *repoQuery) Update(newComment domain.Core, id uint) (domain.Core, error) {
+func (rq *repoQuery) Update(newComment domain.Core) (domain.Core, error) {
 	var cnv Comment = FromDomain(newComment)
-	err := rq.db.Where("id = ?", id).Updates(cnv).Error
+	err := rq.db.Where("id = ?", cnv.ID).Updates(cnv).Error
 	if err != nil {
 		log.Error(config.DATABASE_ERROR)
 		return domain.Core{}, err

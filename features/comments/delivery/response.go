@@ -41,7 +41,7 @@ func ToResponse(core interface{}, code string) interface{} {
 	return res
 }
 
-func ToResponseContent(core interface{}, code string) interface{} {
+func ToResponseComment(core interface{}, code string) interface{} {
 	var res interface{}
 	var arr []UpdateResponse
 	val := core.([]domain.Core)

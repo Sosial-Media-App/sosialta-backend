@@ -11,7 +11,7 @@ type Core struct {
 
 type Repository interface {
 	Insert(newComment Core) (Core, error)
-	Update(newComment Core, id uint) (Core, error)
+	Update(newComment Core) (Core, error)
 	Delete(id uint) error
 	Get(id_content uint) ([]Core, error)
 }
@@ -19,7 +19,7 @@ type Repository interface {
 type Services interface {
 	GetComment(id_content uint) ([]Core, error)
 	AddComment(newComment Core) (Core, error)
-	UpdateComment(newComment Core, id uint) (Core, error)
+	UpdateComment(newComment Core) (Core, error)
 	DeleteComment(id uint) error
 	ExtractToken(c echo.Context) uint
 }

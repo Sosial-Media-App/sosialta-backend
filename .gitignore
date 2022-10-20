@@ -2,4 +2,4 @@
 *_test.go
 *.html
 *.out
-*.env
+config.env

@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/Sosial-Media-App/sosialta/config"
-	// cRepo "github.com/Sosial-Media-App/sosialta/features/contents/repository"
 	uRepo "github.com/Sosial-Media-App/sosialta/features/users/repository"
 	"github.com/labstack/gommon/log"
 	"gorm.io/driver/mysql"
