@@ -25,11 +25,7 @@ func (srv *contentServices) GetContent() ([]domain.Core, error) {
 	res, err := srv.qry.Get()
 	if err != nil {
 		log.Error(err.Error())
-		if strings.Contains(err.Error(), "table") {
-			return nil, errors.New("database error")
-		} else if strings.Contains(err.Error(), "found") {
-			return nil, errors.New("no data")
-		}
+		return nil, errors.New(config.NO_DATA)
 	}
 
 	return res, nil
