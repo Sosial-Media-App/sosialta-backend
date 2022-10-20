@@ -65,7 +65,7 @@ func ToResponseLogin(core interface{}, userToken string, code string) interface{
 	cnv := core.(domain.Core)
 	res = UpdateResponse{
 		ID: cnv.ID, Fullname: cnv.Fullname, Username: cnv.Username,
-		Email: cnv.Email, Password: cnv.Password, Token: userToken,
+		Email: cnv.Email, Password: cnv.Password, UserPicture: cnv.UserPicture, Token: userToken,
 	}
 	return res
 }
