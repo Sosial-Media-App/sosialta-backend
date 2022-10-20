@@ -56,12 +56,16 @@ func (rq *repoQuery) Login(newUser domain.Core) (domain.Core, error) {
 
 func (rq *repoQuery) Update(updateData domain.Core, id uint) (domain.Core, error) {
 	var resQry User
+	var resCty Content
 	resQry = FromDomain(updateData)
 
 	err := rq.db.Where("id = ?", id).Updates(resQry).Error
 	if err != nil {
 		log.Error(config.DATABASE_ERROR)
 		return domain.Core{}, err
+	}
+	if resQry.Username != "" {
+		rq.db.Where("username=?", resQry.Username).Updates(&resCty)
 	}
 
 	updateData = ToDomain(resQry)

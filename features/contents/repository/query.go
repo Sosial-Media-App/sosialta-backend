@@ -19,6 +19,9 @@ func New(dbConn *gorm.DB) domain.Repository {
 
 func (rq *repoQuery) Insert(newContent domain.Core) (domain.Core, error) {
 	var cnv Content = FromDomain(newContent)
+	var tempUser User
+	rq.db.Where("id=?", cnv.IdUser).First(&tempUser)
+	cnv.Username = tempUser.Username
 	if err := rq.db.Create(&cnv).Error; err != nil {
 		return domain.Core{}, err
 	}

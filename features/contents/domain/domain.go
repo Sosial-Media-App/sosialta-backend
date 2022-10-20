@@ -5,6 +5,7 @@ import "github.com/labstack/echo/v4"
 type Core struct {
 	ID           uint
 	IdUser       uint
+	Username     string
 	StoryType    string
 	StoryDetail  string
 	StoryPicture string
@@ -14,6 +15,7 @@ type Core struct {
 type CommentCore struct {
 	ID        uint
 	IdUser    uint
+	Username  string
 	IdContent uint
 	Comment   string
 }
