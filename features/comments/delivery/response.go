@@ -18,6 +18,7 @@ func FailedResponse(msg string) map[string]string {
 type UpdateResponse struct {
 	ID        uint   `json:"id"`
 	IdUser    uint   `json:"id_user"`
+	Username  string `json:"username"`
 	IdContent uint   `json:"id_content"`
 	Comment   string `json:"comment"`
 }
@@ -28,13 +29,13 @@ func ToResponse(core interface{}, code string) interface{} {
 	case "update":
 		cnv := core.(domain.Core)
 		res = UpdateResponse{
-			ID: cnv.ID, IdUser: cnv.IdUser, IdContent: cnv.IdContent,
+			ID: cnv.ID, IdUser: cnv.IdUser, Username: cnv.Username, IdContent: cnv.IdContent,
 			Comment: cnv.Comment,
 		}
 	case "register":
 		cnv := core.(domain.Core)
 		res = UpdateResponse{
-			ID: cnv.ID, IdUser: cnv.IdUser, IdContent: cnv.IdContent,
+			ID: cnv.ID, IdUser: cnv.IdUser, Username: cnv.Username, IdContent: cnv.IdContent,
 			Comment: cnv.Comment,
 		}
 	}
@@ -46,7 +47,7 @@ func ToResponseComment(core interface{}, code string) interface{} {
 	var arr []UpdateResponse
 	val := core.([]domain.Core)
 	for _, cnv := range val {
-		arr = append(arr, UpdateResponse{ID: cnv.ID, IdUser: cnv.IdUser, IdContent: cnv.IdContent,
+		arr = append(arr, UpdateResponse{ID: cnv.ID, IdUser: cnv.IdUser, Username: cnv.Username, IdContent: cnv.IdContent,
 			Comment: cnv.Comment})
 	}
 	res = arr

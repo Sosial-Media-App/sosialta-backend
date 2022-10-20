@@ -31,6 +31,9 @@ func (rq *repoQuery) Get(id_content uint) ([]domain.Core, error) {
 
 func (rq *repoQuery) Insert(newComment domain.Core) (domain.Core, error) {
 	var cnv Comment = FromDomain(newComment)
+	var tempUser User
+	rq.db.Where("id=?", cnv.IdUser).First(&tempUser)
+	cnv.Username = tempUser.Username
 	if err := rq.db.Create(&cnv).Error; err != nil {
 		return domain.Core{}, err
 	}
