@@ -65,15 +65,15 @@ func (cs *contentHandler) RegiterContent() echo.HandlerFunc {
 				Region:      aws.String(os.Getenv("AWS_REGION")),
 				Credentials: credentials.NewStaticCredentials(os.Getenv("AWS_USER"), os.Getenv("AWS_KEY"), ""),
 			}
-			temp := (time.Now().Format("02 Jan 06 15:04 -0700"))
-			input.StoryPicture = "https://sosialtabucket.s3.ap-southeast-1.amazonaws.com/myfiles/" + strings.ReplaceAll(file.Filename, " ", "+") + temp
+			temp := time.Now().Format("02 Jan 06 15:04")
+			input.StoryPicture = "https://sosialtabucket.s3.ap-southeast-1.amazonaws.com/myfiles/" + temp + strings.ReplaceAll(file.Filename, " ", "+")
 			s3Session := session.New(s3Config)
 
 			uploader := s3manager.NewUploader(s3Session)
 			inputData := &s3manager.UploadInput{
-				Bucket: aws.String("sosialtabucket"),                // bucket's name
-				Key:    aws.String("myfiles/" + input.StoryPicture), // files destination location
-				Body:   src,                                         // content of the file
+				Bucket: aws.String("sosialtabucket"),                  // bucket's name
+				Key:    aws.String("myfiles/" + temp + file.Filename), // files destination location
+				Body:   src,                                           // content of the file
 
 			}
 			_, _ = uploader.UploadWithContext(context.Background(), inputData)
@@ -110,15 +110,15 @@ func (cs *contentHandler) UpdateDataContent() echo.HandlerFunc {
 				Credentials: credentials.NewStaticCredentials(os.Getenv("AWS_USER"), os.Getenv("AWS_KEY"), ""),
 			}
 
-			temp := (time.Now().Format("02 Jan 06 15:04 -0700"))
-			input.StoryPicture = "https://sosialtabucket.s3.ap-southeast-1.amazonaws.com/myfiles/" + strings.ReplaceAll(file.Filename, " ", "+") + temp
+			temp := time.Now().Format("02 Jan 06 15:04")
+			input.StoryPicture = "https://sosialtabucket.s3.ap-southeast-1.amazonaws.com/myfiles/" + temp + strings.ReplaceAll(file.Filename, " ", "+")
 			s3Session := session.New(s3Config)
 
 			uploader := s3manager.NewUploader(s3Session)
 			inputData := &s3manager.UploadInput{
-				Bucket: aws.String("sosialtabucket"),                // bucket's name
-				Key:    aws.String("myfiles/" + input.StoryPicture), // files destination location
-				Body:   src,                                         // content of the file
+				Bucket: aws.String("sosialtabucket"),                  // bucket's name
+				Key:    aws.String("myfiles/" + temp + file.Filename), // files destination location
+				Body:   src,                                           // content of the file
 
 			}
 			_, _ = uploader.UploadWithContext(context.Background(), inputData)
