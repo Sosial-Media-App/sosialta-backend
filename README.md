@@ -32,8 +32,8 @@ Read the API documentation here [API Endpoint Documentation](https://app.swagger
 - [Jauhari](https://github.com/muhdjau) (Author)
 
 # 📌 Special Supports:
-- [Jerry Young](https://github.com/jackthepanda96) (BE Mentor)
-- [Yoga S. Devanada](https://github.com/devanada) (FE Mentor)
-- [Rizki](https://github.com/RizuMong) (FE)
-- [Dwi Fakhri](https://github.com/Dwifakhri) (FE)
-- [Rayhan](https://github.com/rayhanrndy) (FE)
+- [Jerry Young](https://github.com/jackthepanda96) (Mentor BE)
+- [Yoga S. Devanada](https://github.com/devanada) (Mentor FE)
+- [Rizki](https://github.com/RizuMong) (FE 9)
+- [Dwi Fakhri](https://github.com/Dwifakhri) (FE 9)
+- [Rayhan](https://github.com/rayhanrndy) (FE 9)
