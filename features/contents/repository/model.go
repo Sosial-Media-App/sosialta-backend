@@ -57,9 +57,8 @@ func ToDomain(c Content) domain.Core {
 func ToDomainArray(u []Content, c []Comment) []domain.Core {
 	var res []domain.Core
 	var cComment []domain.CommentCore
-	var j int = 0
 	for _, val := range u {
-		for i := 0; i < len(c) && j < 3; i++ {
+		for i := 0; i < len(c); i++ {
 			if c[i].IdContent == val.ID {
 				cComment = append(cComment, domain.CommentCore{
 					ID: c[i].ID, IdUser: c[i].IdUser, IdContent: c[i].IdContent, Username: c[i].Username, Comment: c[i].Comment})

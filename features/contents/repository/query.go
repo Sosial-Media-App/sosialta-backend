@@ -65,6 +65,11 @@ func (rq *repoQuery) Get(page int) ([]domain.Core, error) {
 			return nil, err
 		}
 	}
+	for _, val := range resQry {
+		if err := rq.db.Limit(3).Order("created_at desc").Find(&resQryComment, "id_content = ?", val.ID).Error; err != nil {
+			return nil, err
+		}
+	}
 	res := ToDomainArray(resQry, resQryComment)
 	return res, nil
 }
