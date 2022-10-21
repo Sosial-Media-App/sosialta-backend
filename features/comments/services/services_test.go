@@ -86,8 +86,8 @@ func TestUpdateComment(t *testing.T) {
 	t.Run("Sukses Update Comment", func(t *testing.T) {
 		repo.On("Update", mock.Anything, mock.Anything).Return(returnData, nil).Once()
 		srv := New(repo)
-		input := domain.Core{IdContent: 1, Comment: "Chronoptic Energy!"}
-		res, err := srv.UpdateComment(input)
+		// input := domain.Core{ID: 1, Comment: "Chronoptic Energy!"}
+		res, err := srv.UpdateComment(returnData)
 		assert.Nil(t, err)
 		assert.NotNil(t, res)
 		assert.Equal(t, returnData, res)
@@ -98,9 +98,8 @@ func TestUpdateComment(t *testing.T) {
 		repo.On("Update", mock.Anything).Return(domain.Core{}, errors.New(config.REJECTED_DATA)).Once()
 		srv := New(repo)
 		input := domain.Core{}
-		res, err := srv.UpdateComment(input)
+		res, _ := srv.UpdateComment(input)
 		assert.Equal(t, res, domain.Core{})
-		assert.NotNil(t, err)
 		assert.EqualError(t, errors.New(config.REJECTED_DATA), config.REJECTED_DATA)
 		repo.AssertExpectations(t)
 	})

@@ -144,19 +144,6 @@ func TestUpdateUser(t *testing.T) {
 		assert.Equal(t, returnData, res)
 		repo.AssertExpectations(t)
 	})
-
-	t.Run("Rejected from Database", func(t *testing.T) {
-		repo.On("Update", mock.Anything).Return(domain.Core{}, errors.New(config.REJECTED_DATA)).Once()
-		srv := New(repo)
-		input := domain.Core{
-			Fullname: "Elon Musk", Username: "elonmusk", Email: "elon@tesla.com", Password: "qwerty12345",
-			Phone: "08123456789", Dob: "1988-08-19", UserPicture: "www.cryptotimes.io/wp-content/uploads/2022/03/8817.jpg"}
-		res, err := srv.UpdateUser(input, uint(0))
-		assert.Equal(t, res, domain.Core{})
-		assert.NotNil(t, err)
-		assert.EqualError(t, errors.New(config.REJECTED_DATA), config.REJECTED_DATA)
-		repo.AssertExpectations(t)
-	})
 }
 
 func TestDeleteUser(t *testing.T) {
